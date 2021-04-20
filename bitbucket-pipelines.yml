@@ -34,14 +34,14 @@ definitions:
           # Build application
           - rm -rf package-lock.json || true
           - npm install
-          - npm install -g @angular/cli
           - echo "${BUILD_ENVIRONMENT}"
           - echo $BUILD_ENVIRONMENT
-          - ng build --configuration=${BUILD_ENVIRONMENT} --output-path dist/
+          # - ng build --configuration=${BUILD_ENVIRONMENT} --output-path dist/
+          - npm run build
           # Application
           - export DISTRIBUTION_ID=`aws ssm get-parameter --region $REGION --with-decryption --name /ECS-CLUSTER/$CLUSTER_NAME/${APP_NAME}/DISTRIBUTION_ID --output text --query Parameter.Value`
           - export AWS_S3="`aws ssm get-parameter --region $REGION --with-decryption --name /ECS-CLUSTER/$CLUSTER_NAME/${APP_NAME}/AWS_S3 --output text --query Parameter.Value`"
-          - aws s3 sync --delete dist/ s3://$AWS_S3
+          - aws s3 sync --delete build/ s3://$AWS_S3
           - aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths /index.html "/assets*"
 
 pipelines:
