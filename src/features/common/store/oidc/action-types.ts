@@ -1,0 +1,5 @@
+export enum ActionTypes {
+  START_LOADING = '@oidc/START_LOADING',
+  FINISH_LOADING = '@oidc/FINISH_LOADING',
+  SET_USER_MANAGER = '@oidc/SET_USER_MANAGER',
+}

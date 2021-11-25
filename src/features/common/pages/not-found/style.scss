@@ -1,0 +1,32 @@
+@import 'src/assets/styles/mixins';
+
+.not-found-wrapper {
+  .main-container {
+    padding: 120px 0;
+    @include media-breakpoint-sm() {
+      padding: 60px 0;
+    }
+
+    img {
+      max-width: 100%;
+    }
+  }
+
+  .subtitle {
+    font-size: 20px;
+  }
+
+  .not-found {
+    &__home-page-button {
+      display: block;
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      .oc-button {
+        display: block;
+      }
+    }
+  }
+}
