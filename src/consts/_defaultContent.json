@@ -8,12 +8,8 @@
     "menu": {
       "items": [
         {
-          "label": "Browse",
-          "location": "/"
-        },
-        {
-          "label": "My apps",
-          "location": "/my-apps"
+          "label": "Manage apps",
+          "location": "/manage-apps"
         }
       ]
     }
