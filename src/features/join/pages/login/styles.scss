@@ -1,9 +1,14 @@
-@import 'src/assets/styles/mixins';
+@import 'src/styles.scss';
 
 .login-position {
   display: block;
   margin: 5rem auto 0;
   width: 412px;
+  #login_password {
+    &::placeholder {
+      opacity: 0.5;
+    }
+  }
 }
 
 @include media-breakpoint-sm {
