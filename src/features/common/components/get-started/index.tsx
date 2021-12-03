@@ -11,7 +11,6 @@ const GetStarted = () => {
   const onClick = () => {
     history.push(home?.bottomCalloutButtonLocation || '/');
   };
-
   return (
     <div className="bg-container mt-5 py-8 min-height-auto">
       <div className="container">
