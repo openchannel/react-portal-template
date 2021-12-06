@@ -7,10 +7,7 @@ import { chartService, ChartStatisticPeriodModelResponse, AppVersionService} fro
 import { MainTemplate } from 'features/common/templates';
 import { FullAppData,ChartStatisticDataModel } from '@openchannel/react-common-components';
 import { AppListing } from '@openchannel/react-common-components/dist/ui/portal/models';
-
-
 import './styles.scss';
-
 
 const ManageApp = (): JSX.Element => {
   const [isSelectedPage, setSelectedPage] = React.useState('manageApps');
@@ -112,8 +109,6 @@ const ManageApp = (): JSX.Element => {
   const [countText, setCountText] = React.useState<string>(defaultProps.countText);
   const [appData, setAppData] = React.useState<AppListing>(appsConfig);
 
-
-
   React.useEffect( () => {
   const period = defaultProps.chartData.periods.find(v => v.active);
   const field = defaultProps.chartData.fields.find(v => v.active);
@@ -128,8 +123,8 @@ const ManageApp = (): JSX.Element => {
     status: (order:number)  => `{'status.value': ${order}, 'parent.status.value': ${order}}`,
   };
 
-  const appVersions = async () => {
-    const newChartDat = { ...defaultProps.chartData };
+  const appVersions = React.useCallback(async () => {
+    const newChartDat = { ...chartData };
     const newAppsConfig = {...appData};
     const sortQuery: string = sortOptionsQueryPattern.created(-1);
 
@@ -199,13 +194,13 @@ const ManageApp = (): JSX.Element => {
     } catch {
       notify.error('Error occured while rendering apps');
     }
-  };
+  }, [chartData, appData, appsConfig]);
 
 
-  const updateChartData = async (periodVal: string, fieldVal: string, appVal: string, period:ChartStatisticPeriodModelResponse) => {
+  const updateChartData = React.useCallback( async (periodVal: string, fieldVal: string, appVal: string, period:ChartStatisticPeriodModelResponse) => {
     const dateEnd = new Date();
     const dateStart = chartService.getDateStartByCurrentPeriod(dateEnd, period);
-    const newChartDat = { ...defaultProps.chartData };
+    const newChartDat = { ...chartData };
     const newChart = { ...chartPeriod };
 	  const appReq = (appVal !== 'allApps' ? appVal : '');
 
@@ -250,11 +245,12 @@ const ManageApp = (): JSX.Element => {
 	} catch {
      		notify.error('Error occured while rendering data');
 		}
- };
+ }, [chartData, countText, count, chartPeriod]);
 
-	const changeChartOptions = ({ period, field, app }: ChartOptionsChange) => {
+
+	const changeChartOptions = React.useCallback(({ period, field, app }: ChartOptionsChange) => {
     updateChartData(period.id, field.id, app!.id, period);
-	};
+	}, [chartData]);
 
   return (
     <MainTemplate>
@@ -266,32 +262,31 @@ const ManageApp = (): JSX.Element => {
             <OcNavigationBreadcrumbs pageTitle="Create app" navigateText="Back" navigateClick={() => onClickPass('manageApps')} />
         )}
       </div>
-
       <div className="container manage-app">
-      {isSelectedPage === 'manageApps' && 
-        <>
-      	<div className="container my-3 px-0">
-          <OcChartComponent 
-            chartData={chartData}
-            count={count}
-            countText={countText}
-            changeChartOptions={changeChartOptions} 
-            downloadUrl={'assets/img/cloud-download.svg'}
-            activeDataType= 'graph'
-          />
-		</div> 
-		<div className="manage-app-table pb-2">
-			<OcAppTable
-				descendingSortIcon={'assets/img/dropdown.svg'}
-				ascendingSortIcon={'assets/img/dropdown.svg'}
-				defaultAppIcon={'assets/img/default-app-icon.svg'}
-				onSort={() => sortOptionsQueryPattern.created(-1)}
-				properties={appData}
-				noAppMessage = {'No Apps Has Been Added Yet'} 
-			/> 
-		 </div>
-        </>
-      } 
+        {isSelectedPage === 'manageApps' && 
+          <>
+            <div className="container my-3 px-0">
+              <OcChartComponent 
+                chartData={chartData}
+                count={count}
+                countText={countText}
+                changeChartOptions={changeChartOptions} 
+                downloadUrl={'assets/img/cloud-download.svg'}
+                activeDataType= 'graph'
+              />
+            </div> 
+            <div className="manage-app-table pb-2">
+              <OcAppTable
+                descendingSortIcon={'assets/img/dropdown.svg'}
+                ascendingSortIcon={'assets/img/dropdown.svg'}
+                defaultAppIcon={'assets/img/default-app-icon.svg'}
+                onSort={() => sortOptionsQueryPattern.created(-1)}
+                properties={appData}
+                noAppMessage = {'No Apps Has Been Added Yet'} 
+              /> 
+            </div>
+          </>
+        }
       </div>
     </MainTemplate>
   );
