@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useHistory } from 'react-router';
 import { useTypedSelector } from 'features/common/hooks';
+import { OcButtonComponent } from '@openchannel/react-common-components/dist/ui/common/atoms';
 
 import AppIcon from '../../../../../public/assets/img/app-icon.svg';
 import AppIcon1 from '../../../../../public/assets/img/app-icon1.svg';
@@ -28,13 +29,11 @@ export const HomeContent = () => {
             {home?.pageInfoSubtext}
           </p>
           <div className="home__hero-partner">
-            <button
+            <OcButtonComponent
               className="oc-button oc-button_primary oc-button__text"
-              type="button"
               onClick={handleClick}
-            >
-              Become a partner
-            </button>
+              text="Become a partner"
+            />
           </div>
         </div>
       </div>
