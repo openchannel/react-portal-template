@@ -4,6 +4,12 @@
   display: block;
   margin: 5rem auto 0;
   width: 412px;
+  .select-component {
+    margin-bottom: 3rem;
+  }
+  .form__buttons {
+    display: block;
+  }
 }
 
 @include media-breakpoint-sm {
