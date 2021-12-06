@@ -48,14 +48,14 @@ export const HomeContent = () => {
           <img
             className="home__services-image img-fluid article-image"
             src={TemporaryHomePic}
-            alt=""
+            alt="home pic"
           />
         </section>
         <div className="home__services-list col-md-5">
           <div className="home__services-card feature-card">
             <div className="row mx-0 align-items-center flex-nowrap">
               <div className="feature-icon">
-                <img src={AppIcon1} alt="" />
+                <img src={AppIcon1} alt="icon" />
               </div>
               <h3 className="home__services-card-title ml-2 mb-0">Reach more users</h3>
             </div>
@@ -68,7 +68,7 @@ export const HomeContent = () => {
           <div className="home__services-card feature-card">
             <div className="row mx-0 align-items-center flex-nowrap">
               <div className="feature-icon">
-                <img src={IconPlaceholder} alt="" />
+                <img src={IconPlaceholder} alt="icon" />
               </div>
               <h3 className="home__services-card-title ml-2 mb-0">Create new revenue streams</h3>
             </div>
@@ -81,7 +81,7 @@ export const HomeContent = () => {
           <div className="home__services-card feature-card">
             <div className="row mx-0 align-items-center flex-nowrap">
               <div className="feature-icon">
-                <img src={IconPlaceholder2} alt="" />
+                <img src={IconPlaceholder2} alt="icon" />
               </div>
               <h3 className="home__services-card-title ml-2 mb-0">Find new committers</h3>
             </div>
@@ -104,7 +104,7 @@ export const HomeContent = () => {
             <div className="home__technology-card">
               <div className="row mx-0 align-items-center">
                 <div className="technology-icon">
-                  <img src={AppIcon1} alt="" />
+                  <img src={AppIcon1} alt="icon" />
                 </div>
                 <p className="font-med ml-2 mb-0">Plesk</p>
               </div>
@@ -120,7 +120,7 @@ export const HomeContent = () => {
             <div className="home__technology-card">
               <div className="row mx-0 align-items-center">
                 <div className="technology-icon">
-                  <img src={AppIcon} alt="" />
+                  <img src={AppIcon} alt="icon" />
                 </div>
                 <p className="font-med ml-2 mb-0">Hasura GraphQL</p>
               </div>
@@ -136,7 +136,7 @@ export const HomeContent = () => {
             <div className="home__technology-card">
               <div className="row mx-0 align-items-center">
                 <div className="technology-icon">
-                  <img src={AppIcon3} alt="" />
+                  <img src={AppIcon3} alt="icon" />
                 </div>
                 <p className="font-med ml-2 mb-0">Zulip</p>
               </div>
