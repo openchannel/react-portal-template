@@ -5,6 +5,7 @@ import {
   sessionReducer as session,
   oidcReducer as oidc,
   userTypesReducer as userTypes,
+  devTypesReducer as userDevTypes,
   userInvitesReducer as userInvites,
 } from './features/common/store';
 import { joinReducer as join } from './features/join/store';
@@ -15,5 +16,6 @@ export const rootReducer = combineReducers({
   session,
   userTypes,
   userInvites,
+  userDevTypes,
   join,
 });

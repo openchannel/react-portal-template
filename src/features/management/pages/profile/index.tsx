@@ -6,13 +6,17 @@ import { ChangePasswordRequest } from '@openchannel/react-common-services';
 import { notify } from '@openchannel/react-common-components/dist/ui/common/atoms';
 import { OcEditUserFormComponent } from '@openchannel/react-common-components/dist/ui/auth/organisms';
 import { OcNavigationBreadcrumbs } from '@openchannel/react-common-components/dist/ui/common/molecules';
-import { OcForm, OcFormFormikHelpers, OcFormValues } from '@openchannel/react-common-components/dist/ui/form/organisms';
+import {
+  OcForm,
+  OcFormFormikHelpers,
+  OcFormValues,
+} from '@openchannel/react-common-components/dist/ui/form/organisms';
 import { apps, fileService } from '@openchannel/react-common-services';
 
 import { useTypedSelector } from 'features/common/hooks';
 import { MainTemplate } from 'features/common/templates';
 import { changePassword } from 'features/common/store/session';
-import { loadUserProfileForm, saveUserData } from 'features/common/store/user-types';
+import { loadDevProfileForm, saveDevData } from 'features/common/store/dev-types';
 
 import { formConfigsWithoutTypeData, formPassword } from './constants';
 
@@ -27,7 +31,7 @@ const Profile = (): JSX.Element => {
   const [isSelectedPage, setSelectedPage] = React.useState('myProfile');
   const dispatch = useDispatch();
   const history = useHistory();
-  const { configs, account, isLoading } = useTypedSelector(({ userTypes }) => userTypes);
+  const { configs, account, isLoading } = useTypedSelector(({ userDevTypes }) => userDevTypes);
 
   const onClickPass = React.useCallback((e) => {
     switch (e.target.dataset.link) {
@@ -44,7 +48,7 @@ const Profile = (): JSX.Element => {
   }, []);
 
   React.useEffect(() => {
-    dispatch(loadUserProfileForm(formConfigsWithoutTypeData, false, true));
+    dispatch(loadDevProfileForm(formConfigsWithoutTypeData, false, true));
     switch (isSelectedPage) {
       case 'myProfile':
         history.replace('/my-profile/profile-details');
@@ -57,7 +61,10 @@ const Profile = (): JSX.Element => {
     }
   }, []);
 
-  const handleChangePasswordSubmit = async (value: OcFormValues, { resetForm, setErrors }: OcFormFormikHelpers) => {
+  const handleChangePasswordSubmit = async (
+    value: OcFormValues,
+    { resetForm, setErrors }: OcFormFormikHelpers,
+  ) => {
     try {
       await dispatch(changePassword(value as ChangePasswordRequest));
       resetForm();
@@ -70,7 +77,10 @@ const Profile = (): JSX.Element => {
     }
   };
 
-  const handleMyProfileSubmit = async (value: OcFormValues, { setErrors, setSubmitting }: OcFormFormikHelpers) => {
+  const handleMyProfileSubmit = async (
+    value: OcFormValues,
+    { setErrors, setSubmitting }: OcFormFormikHelpers,
+  ) => {
     try {
       const formData = Object.entries(value).reduce((acc, [k, v]) => {
         if (k === 'info') {
@@ -83,7 +93,7 @@ const Profile = (): JSX.Element => {
 
       merge(account, formData);
 
-      await dispatch(saveUserData(account));
+      await dispatch(saveDevData(account));
 
       setSubmitting(false);
       notify.success('Your profile has been updated');
@@ -109,11 +119,16 @@ const Profile = (): JSX.Element => {
       }, '');
     }
   }, [configs, account]);
+  console.log('! configs !', configs);
 
   return (
     <MainTemplate>
       <div className="bg-container height-unset">
-        <OcNavigationBreadcrumbs pageTitle="My profile" navigateText="Back" navigateClick={history.goBack} />
+        <OcNavigationBreadcrumbs
+          pageTitle="My profile"
+          navigateText="Back"
+          navigateClick={history.goBack}
+        />
       </div>
 
       <div className="container mb-8">
