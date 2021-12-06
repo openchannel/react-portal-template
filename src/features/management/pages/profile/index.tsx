@@ -119,7 +119,6 @@ const Profile = (): JSX.Element => {
       }, '');
     }
   }, [configs, account]);
-  console.log('! configs !', configs);
 
   return (
     <MainTemplate>
