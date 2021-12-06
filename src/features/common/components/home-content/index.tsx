@@ -30,7 +30,7 @@ export const HomeContent = () => {
           </p>
           <div className="home__hero-partner">
             <OcButtonComponent
-              className="oc-button oc-button_primary oc-button__text"
+              // className="oc-button oc-button_primary oc-button__text"
               onClick={handleClick}
               text="Become a partner"
             />
