@@ -10,7 +10,9 @@ interface Helmet {
 }
 
 export const Helmet: React.FC<Helmet> = React.memo(({ title }) => {
-  const pageTitle = title ? merge(title, siteConfig.title) : merge(siteConfig.title, siteConfig.tagline);
+  const pageTitle = title
+    ? merge(title, siteConfig.title)
+    : merge(siteConfig.title, siteConfig.tagline);
 
   return <ReactHelmet {...siteConfig} title={pageTitle} />;
 });

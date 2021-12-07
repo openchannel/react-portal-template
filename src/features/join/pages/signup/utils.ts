@@ -10,7 +10,10 @@ const addFieldPrefix = {
   organization: (str: string) => `${ORGANIZATION_PREFIX}${str}`,
 };
 
-const mapConfig = (config: OcEditUserTypeConfig | undefined, addPrefixFn: (s: string) => string) => {
+const mapConfig = (
+  config: OcEditUserTypeConfig | undefined,
+  addPrefixFn: (s: string) => string,
+) => {
   const mappedConfig = cloneDeep(config);
 
   merge(mappedConfig, {
@@ -28,7 +31,9 @@ export const prefixedConfigs = (configs: OcEditUserFormConfig[]): OcEditUserForm
     ? configs.map((config) => ({
         ...config,
         account: mapConfig(config.account, addFieldPrefix.account),
-        organization: config.organization ? mapConfig(config.organization, addFieldPrefix.organization) : undefined,
+        organization: config.organization
+          ? mapConfig(config.organization, addFieldPrefix.organization)
+          : undefined,
         fieldsOrder: (config.fieldsOrder || []).map((fo) =>
           fo.includes(`${ORGANIZATION_PREFIX}`) ? addFieldPrefix.account(fo) : fo,
         ),

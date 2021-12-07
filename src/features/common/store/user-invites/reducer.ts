@@ -16,7 +16,10 @@ const initialState: UserInvites = {
   },
 };
 
-export const userInvitesReducer = (state: UserInvites = initialState, action: Action): UserInvites => {
+export const userInvitesReducer = (
+  state: UserInvites = initialState,
+  action: Action,
+): UserInvites => {
   switch (action.type) {
     case ActionTypes.SET_LIST_ROLES: {
       return {

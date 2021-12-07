@@ -49,16 +49,17 @@ export const nativeSignup = (body: OCNativeCustomSignup | OCNativeDefaultSignup)
   }
 };
 
-export const loginWithSSOTokens = (idToken: string, accessToken: string) => async (dispatch: Dispatch) => {
-  dispatch(startLoading());
+export const loginWithSSOTokens =
+  (idToken: string, accessToken: string) => async (dispatch: Dispatch) => {
+    dispatch(startLoading());
 
-  const { data } = await auth.login({ idToken, accessToken });
+    const { data } = await auth.login({ idToken, accessToken });
 
-  dispatch(setSession(data));
-  dispatch(finishLoading());
+    dispatch(setSession(data));
+    dispatch(finishLoading());
 
-  return data;
-};
+    return data;
+  };
 
 export const tryLoginByRefreshToken = () => async (dispatch: Dispatch) => {
   try {
@@ -68,7 +69,12 @@ export const tryLoginByRefreshToken = () => async (dispatch: Dispatch) => {
       throw 'Refresh token does not exist';
     }
 
-    dispatch(setSession({ accessToken: storage.getAccessToken(), refreshToken: storage.getRefreshToken() }));
+    dispatch(
+      setSession({
+        accessToken: storage.getAccessToken(),
+        refreshToken: storage.getRefreshToken(),
+      }),
+    );
   } catch (error) {
     dispatch(removeSession());
     console.error(error);
@@ -93,7 +99,10 @@ export const logout = () => async (dispatch: Dispatch, getState: () => RootState
 
 export const changePassword = (body: ChangePasswordRequest) => async (dispatch: Dispatch) => {
   try {
-    const response = await native.changePassword({ ...body, jwtRefreshToken: storage.getRefreshToken() });
+    const response = await native.changePassword({
+      ...body,
+      jwtRefreshToken: storage.getRefreshToken(),
+    });
     const { accessToken, refreshToken } = response.data;
     dispatch(setSession({ accessToken, refreshToken }));
     // eslint-disable-next-line

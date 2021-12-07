@@ -29,8 +29,14 @@ const EMPTY_TYPE_RESPONSE = {
 
 const startLoading = () => ({ type: ActionTypes.START_LOADING });
 const finishLoading = () => ({ type: ActionTypes.FINISH_LOADING });
-const saveConfig = (configs: OcEditUserFormConfig[]) => ({ type: ActionTypes.GET_USER_CONFIG, payload: { configs } });
-const saveAccount = (account: UserAccount) => ({ type: ActionTypes.GET_USER_ACCOUNT, payload: { account } });
+const saveConfig = (configs: OcEditUserFormConfig[]) => ({
+  type: ActionTypes.GET_USER_CONFIG,
+  payload: { configs },
+});
+const saveAccount = (account: UserAccount) => ({
+  type: ActionTypes.GET_USER_ACCOUNT,
+  payload: { account },
+});
 const saveCompanyForm = (companyForm: TypeModel<TypeFieldModel>) => ({
   type: ActionTypes.GET_USER_COMPANY_FORM,
   payload: { companyForm },
@@ -40,7 +46,8 @@ const resetCompanyForm = () => ({ type: ActionTypes.RESET_USER_COMPANY_FORM });
 const getUserTypes = async (injectOrganizationType: boolean, configs: OcEditUserFormConfig[]) => {
   if (injectOrganizationType) {
     const orgTypesIDs = configs.map((config) => config?.organization?.type).filter((type) => type);
-    const searchQuery = orgTypesIDs?.length > 0 ? `{'userTypeId':{'$in': ['${orgTypesIDs.join("','")}']}}` : '';
+    const searchQuery =
+      orgTypesIDs?.length > 0 ? `{'userTypeId':{'$in': ['${orgTypesIDs.join("','")}']}}` : '';
 
     if (searchQuery) {
       const response = await users.getUserTypes(searchQuery, '', 1, 100);
@@ -55,7 +62,10 @@ const getUserTypes = async (injectOrganizationType: boolean, configs: OcEditUser
 const getUserAccountTypes = async (injectAccountType: boolean, configs: OcEditUserFormConfig[]) => {
   if (injectAccountType) {
     const accTypesIDs = configs.map((config) => config?.account?.type).filter((type) => type);
-    const searchQuery = accTypesIDs?.length > 0 ? `{'userAccountTypeId':{'$in': ['${accTypesIDs.join("','")}']}}` : '';
+    const searchQuery =
+      accTypesIDs?.length > 0
+        ? `{'userAccountTypeId':{'$in': ['${accTypesIDs.join("','")}']}}`
+        : '';
 
     if (searchQuery) {
       const response = await userAccountTypes.getUserAccountTypes(1, 100, searchQuery);
@@ -67,7 +77,11 @@ const getUserAccountTypes = async (injectAccountType: boolean, configs: OcEditUs
 };
 
 export const loadUserProfileForm =
-  (configs: OcEditUserFormConfig[], injectOrganizationTypes: boolean, injectAccountTypes: boolean) =>
+  (
+    configs: OcEditUserFormConfig[],
+    injectOrganizationTypes: boolean,
+    injectAccountTypes: boolean,
+  ) =>
   async (dispatch: Dispatch) => {
     dispatch(startLoading());
 
