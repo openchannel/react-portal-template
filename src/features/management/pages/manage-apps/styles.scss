@@ -2,10 +2,17 @@
 @import '/src/theme.scss';
 @import '/src/assets/styles/mixins';
 
-.main-container {
-    &__custom-button {
-        &.oc-button {
-            font-weight: 500;
+.manage-app-header {
+    padding: 16px;
+    @include media-breakpoint-sm {
+		padding: 16px 24px;
+    }
+
+    & .main-container {
+        &__custom-button {
+            &.oc-button {
+                font-weight: 500;
+            }
         }
     }
 }
@@ -28,3 +35,4 @@
         }
     }
 }
+

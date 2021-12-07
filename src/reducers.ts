@@ -8,6 +8,7 @@ import {
   userInvitesReducer as userInvites,
 } from './features/common/store';
 import { joinReducer as join } from './features/join/store';
+import { appDataReducer as appData } from './features/management/store';
 
 export const rootReducer = combineReducers({
   cmsContent,
@@ -16,4 +17,5 @@ export const rootReducer = combineReducers({
   userTypes,
   userInvites,
   join,
+  appData,
 });
