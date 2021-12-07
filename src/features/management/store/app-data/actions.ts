@@ -28,7 +28,7 @@ export const appVersions = () => async (dispatch: Dispatch) => {
       JSON.stringify(query),
     );
     dispatch(setReducer(ActionTypes.SET_CHART, data));
-  } catch (e){
+  } catch (e) {
     notifyErrorResp(e);
   }
 };
