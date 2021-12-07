@@ -77,7 +77,6 @@ export const tryLoginByRefreshToken = () => async (dispatch: Dispatch) => {
     );
   } catch (error) {
     dispatch(removeSession());
-    console.error(error);
     throw error;
   }
 };

@@ -16,7 +16,7 @@ import { apps, fileService } from '@openchannel/react-common-services';
 import { useTypedSelector } from 'features/common/hooks';
 import { MainTemplate } from 'features/common/templates';
 import { changePassword } from 'features/common/store/session';
-import { loadUserProfileForm, saveUserData } from 'features/common/store/user-types';
+import { loadDevProfileForm, saveDevData } from 'features/common/store/dev-types';
 
 import { formConfigsWithoutTypeData, formPassword } from './constants';
 
@@ -31,7 +31,7 @@ const Profile = (): JSX.Element => {
   const [isSelectedPage, setSelectedPage] = React.useState('myProfile');
   const dispatch = useDispatch();
   const history = useHistory();
-  const { configs, account, isLoading } = useTypedSelector(({ userTypes }) => userTypes);
+  const { configs, account, isLoading } = useTypedSelector(({ userDevTypes }) => userDevTypes);
 
   const onClickPass = React.useCallback((e) => {
     switch (e.target.dataset.link) {
@@ -48,7 +48,7 @@ const Profile = (): JSX.Element => {
   }, []);
 
   React.useEffect(() => {
-    dispatch(loadUserProfileForm(formConfigsWithoutTypeData, false, true));
+    dispatch(loadDevProfileForm(formConfigsWithoutTypeData, false, true));
     switch (isSelectedPage) {
       case 'myProfile':
         history.replace('/my-profile/profile-details');
@@ -93,7 +93,7 @@ const Profile = (): JSX.Element => {
 
       merge(account, formData);
 
-      await dispatch(saveUserData(account));
+      await dispatch(saveDevData(account));
 
       setSubmitting(false);
       notify.success('Your profile has been updated');
