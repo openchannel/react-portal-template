@@ -1,9 +1,9 @@
 import { Dispatch } from 'redux';
 import { FullAppData, ChartStatisticFiledModel } from '@openchannel/react-common-components';
-import { notify } from '@openchannel/react-common-components/dist/ui/common/atoms';
 import { chartService, AppVersionService } from '@openchannel/react-common-services';
 import { appsConfig, query } from './constants';
 import { ActionTypes } from './action-types';
+import { notifyErrorResp } from 'features/common/libs/helpers';
 
 const sortOptionsQueryPattern = {
   created: (order: number) => `{'created': ${order}}`,
@@ -28,8 +28,8 @@ export const appVersions = () => async (dispatch: Dispatch) => {
       JSON.stringify(query),
     );
     dispatch(setReducer(ActionTypes.SET_CHART, data));
-  } catch {
-    notify.error('Error occured while rendering apps');
+  } catch (e){
+    notifyErrorResp(e);
   }
 };
 
@@ -60,7 +60,7 @@ export const updateChartData =
           appVal: app!.id,
         }),
       );
-    } catch {
-      notify.error('Error occured while rendering data');
+    } catch (e) {
+      notifyErrorResp(e);
     }
   };
