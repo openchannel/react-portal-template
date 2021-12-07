@@ -1,4 +1,8 @@
-import { email, errorMessages, password } from '@openchannel/react-common-components/dist/ui/form/lib';
+import {
+  email,
+  errorMessages,
+  password,
+} from '@openchannel/react-common-components/dist/ui/form/lib';
 import * as H from 'history';
 
 export const invalidMassageEmail = () => errorMessages.email();

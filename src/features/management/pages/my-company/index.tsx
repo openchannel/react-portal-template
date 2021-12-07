@@ -14,7 +14,10 @@ import './styles.scss';
 const MyCompany = (): JSX.Element => {
   const history = useHistory();
   const [selectedPage, setSelectedPage] = React.useState(pageIds.company);
-  const [inviteModal, updateInviteModal] = React.useState<InviteModalState>({ isOpened: false, user: null });
+  const [inviteModal, updateInviteModal] = React.useState<InviteModalState>({
+    isOpened: false,
+    user: null,
+  });
 
   const filterPagesByUserType = page.filter((page) => storage.hasAnyPermission(page.permissions));
 

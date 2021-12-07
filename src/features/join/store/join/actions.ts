@@ -86,21 +86,25 @@ export const getUserInviteInfoByToken = (token: string) => async (dispatch: Type
   }
 };
 
-export const sendInvite = (payload: SignUpByInviteRequest) => async (dispatch: TypedDispatch, getState: GetState) => {
-  const { userInviteData } = getState().join;
+export const sendInvite =
+  (payload: SignUpByInviteRequest) => async (dispatch: TypedDispatch, getState: GetState) => {
+    const { userInviteData } = getState().join;
 
-  try {
-    await nativeLogin.signupByInvite({ userCustomData: payload, inviteToken: userInviteData!.token! });
+    try {
+      await nativeLogin.signupByInvite({
+        userCustomData: payload,
+        inviteToken: userInviteData!.token!,
+      });
 
-    if (storage.isUserLoggedIn()) {
-      // remove existed session. issue - AT-1082
-      await dispatch(logout());
+      if (storage.isUserLoggedIn()) {
+        // remove existed session. issue - AT-1082
+        await dispatch(logout());
+      }
+    } catch (e) {
+      notifyErrorResp(e);
+      throw e;
     }
-  } catch (e) {
-    notifyErrorResp(e);
-    throw e;
-  }
-};
+  };
 
 export const sendActivationCode = (email: string) => async () => {
   try {

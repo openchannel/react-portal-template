@@ -14,9 +14,11 @@ export const AuthWrapper: React.FC = ({ children }) => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { isSessionLoading, checkSession } = useAuth();
-  const { isLoading: isOidcLoading, userManager, isSsoLogin } = useTypedSelector(
-    (state) => state.oidc,
-  );
+  const {
+    isLoading: isOidcLoading,
+    userManager,
+    isSsoLogin,
+  } = useTypedSelector((state) => state.oidc);
 
   // create session on oidc response
   const loginWithOidcTokens = React.useCallback(

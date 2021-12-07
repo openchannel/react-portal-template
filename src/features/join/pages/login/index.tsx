@@ -24,7 +24,15 @@ const LoginPage = (): JSX.Element => {
   }, []);
 
   const onSubmit = React.useCallback(
-    async ({ email, password, remember }: { email: string; password: string; remember: boolean }) => {
+    async ({
+      email,
+      password,
+      remember,
+    }: {
+      email: string;
+      password: string;
+      remember: boolean;
+    }) => {
       if (serverErrorValidation) {
         setServerErrorValidation(false);
       }

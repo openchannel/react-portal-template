@@ -106,7 +106,10 @@ export const Header = ({ cmsData }: any): JSX.Element => {
                 (item: any) => {
                   const validPath = item.location || '/';
                   return (
-                    <li className={`nav-item ${location.pathname === validPath ? 'active' : ''}`} key={validPath}>
+                    <li
+                      className={`nav-item ${location.pathname === validPath ? 'active' : ''}`}
+                      key={validPath}
+                    >
                       <Link to={validPath} className="nav-link cursor-pointer" onClick={closedMenu}>
                         {item.label}
                       </Link>
@@ -117,7 +120,12 @@ export const Header = ({ cmsData }: any): JSX.Element => {
               {isExist && (
                 <li className="nav-item">
                   <div className="options-wrapper">
-                    <OcProfileNavbar username="More" options={options} initials="" onSelect={onProfileNavbarClick} />
+                    <OcProfileNavbar
+                      username="More"
+                      options={options}
+                      initials=""
+                      onSelect={onProfileNavbarClick}
+                    />
                   </div>
                 </li>
               )}
@@ -126,7 +134,9 @@ export const Header = ({ cmsData }: any): JSX.Element => {
                   <li className="nav-item">
                     <div
                       className={`nav-item collaps-none justify-content-between align-items-center ${
-                        checkIncludesUrl('/management/profile', '/management/company') ? 'active' : ''
+                        checkIncludesUrl('/management/profile', '/management/company')
+                          ? 'active'
+                          : ''
                       }`}
                       onClick={toggleMenuMore}
                       role="button"
@@ -137,7 +147,9 @@ export const Header = ({ cmsData }: any): JSX.Element => {
                       <div className={`pr-3 ${isMobileMenuCollapsed ? 'rotate-img' : ''}`}>
                         <ButtonDown
                           className={`${
-                            checkIncludesUrl('/management/profile', '/management/company') ? '' : 'change-icon-color'
+                            checkIncludesUrl('/management/profile', '/management/company')
+                              ? ''
+                              : 'change-icon-color'
                           }`}
                         />
                       </div>
@@ -145,7 +157,10 @@ export const Header = ({ cmsData }: any): JSX.Element => {
                   </li>
                   <div className="collaps-items">
                     {
-                      <div id="collapsMoreContent" className={`collapse ${isMobileMenuCollapsed ? 'show' : ''}`}>
+                      <div
+                        id="collapsMoreContent"
+                        className={`collapse ${isMobileMenuCollapsed ? 'show' : ''}`}
+                      >
                         <ul className="navbar-nav ml-5">
                           {options.map((item) => (
                             <li className="nav-item" key={item.value}>

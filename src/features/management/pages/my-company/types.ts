@@ -2,7 +2,13 @@ import { Permission, UserAccountGridModel } from '@openchannel/react-common-serv
 import { UserAccountInviteStatusTypeModel } from '@openchannel/react-common-services/dist/model/api/user.model';
 
 export interface UserData extends UserAccountGridModel {
-  [index: string]: string | string[] | number | boolean | UserAccountInviteStatusTypeModel | undefined;
+  [index: string]:
+    | string
+    | string[]
+    | number
+    | boolean
+    | UserAccountInviteStatusTypeModel
+    | undefined;
 }
 
 export type InviteModalState = { isOpened: boolean; user: UserAccountGridModel | null };

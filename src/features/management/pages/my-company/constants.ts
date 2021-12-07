@@ -1,4 +1,8 @@
-import { AccessLevel, PermissionType, UserAccountGridModel } from '@openchannel/react-common-services';
+import {
+  AccessLevel,
+  PermissionType,
+  UserAccountGridModel,
+} from '@openchannel/react-common-services';
 
 import { ConfirmDeleteUserModal, Page } from './types';
 
