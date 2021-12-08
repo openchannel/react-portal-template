@@ -160,7 +160,7 @@ export const HomeContent = () => {
             <p className="home__approach-card-text text-secondary">
               Just click
               <a href="/" className="home__approach-card-link link font-med">
-                Become a Seller
+                &nbsp;Become a Seller&nbsp;
               </a>
               and give us a few pieces of information about your 1-Click App idea and your company.
               We&apos;ll respond with next steps or additional questions.
@@ -175,11 +175,11 @@ export const HomeContent = () => {
               Quickly and simply build a VM image on Open Channel manually, or automate via Fabric
               and Packer,
               <a href="/" className="home__approach-card-link link font-med">
-                then check its quality and readiness with our tools.
+                &nbsp;then check its quality and readiness with our tools.&nbsp;
               </a>
               Or you can simply build a Kubernetes app with a single
               <a href="/" className="home__approach-card-link link font-med">
-                PR on our repo.
+                &nbsp;PR on our repo.&nbsp;
               </a>
             </p>
           </div>
