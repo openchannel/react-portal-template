@@ -70,7 +70,7 @@ const ManageApp = (): JSX.Element => {
 
   return (
     <MainTemplate>
-      <div className="bg-container height-unset manage-app-header">
+      <div className="bg-container manage-app-header">
         <OcNavigationBreadcrumbs
           pageTitle="Manage apps"
           buttonText="Create app"
@@ -94,7 +94,6 @@ const ManageApp = (): JSX.Element => {
               descendingSortIcon={'assets/img/dropdown.svg'}
               ascendingSortIcon={'assets/img/dropdown.svg'}
               defaultAppIcon={'assets/img/default-app-icon.svg'}
-              onSort={() => {}}
               properties={allAppsData}
               noAppMessage={'No Apps Has Been Added Yet'}
             />

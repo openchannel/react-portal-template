@@ -10,6 +10,7 @@ const sortOptionsQueryPattern = {
   name: (order: number) => `{'name': ${order}}`,
   status: (order: number) => `{'status.value': ${order}, 'parent.status.value': ${order}}`,
 };
+const sortQuery = sortOptionsQueryPattern.created(-1);
 
 export const setReducer = (
   type: string,
@@ -19,7 +20,6 @@ export const setReducer = (
 };
 
 export const appVersions = () => async (dispatch: Dispatch) => {
-  const sortQuery = sortOptionsQueryPattern.created(-1);
   try {
     const { data } = await AppVersionService.getAppsVersions(
       appsConfig.data.pageNumber,
@@ -28,6 +28,8 @@ export const appVersions = () => async (dispatch: Dispatch) => {
       JSON.stringify(query),
     );
     dispatch(setReducer(ActionTypes.SET_CHART, data));
+    getAppsChildren(data.list)(dispatch);
+      
   } catch (e) {
     notifyErrorResp(e);
   }
@@ -64,3 +66,37 @@ export const updateChartData =
       notifyErrorResp(e);
     }
   };
+
+
+ export const getAppsChildren = (parentList: FullAppData[]) => async (dispatch: Dispatch) => {
+    const parents = [...parentList];
+    const parentIds: string[] = parents.map(parent => parent.appId);
+    
+    if (parentIds.length > 0) {
+        const childQuery = {
+            'status.value': {
+                $in: ['inReview', 'pending', 'inDevelopment'],
+            },
+            appId: {
+                $in: parentIds,
+            },
+            'parent.status': {
+                $exists: true,
+            },
+        };
+
+        try {
+          const { data } = await AppVersionService.getAppsVersions(
+            appsConfig.data.pageNumber,
+            appsConfig.data.count,
+            sortQuery,
+            JSON.stringify(childQuery),
+          );
+          dispatch(setReducer(ActionTypes.SET_CHILD, data));
+        } catch (e) {
+          notifyErrorResp(e);
+        }
+    }
+
+    return parents;
+}
