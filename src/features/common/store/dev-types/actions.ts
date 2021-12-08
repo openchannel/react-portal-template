@@ -7,8 +7,8 @@ import {
 import {
   TypeMapperUtils,
   UserAccount,
-  userAccount,
-  userAccountTypes,
+  developerAccount,
+  developerAccountTypes,
   users,
   storage,
 } from '@openchannel/react-common-services';
@@ -30,24 +30,24 @@ const EMPTY_TYPE_RESPONSE = {
 const startLoading = () => ({ type: ActionTypes.START_LOADING });
 const finishLoading = () => ({ type: ActionTypes.FINISH_LOADING });
 const saveConfig = (configs: OcEditUserFormConfig[]) => ({
-  type: ActionTypes.GET_USER_CONFIG,
+  type: ActionTypes.GET_DEV_CONFIG,
   payload: { configs },
 });
 const saveAccount = (account: UserAccount) => ({
-  type: ActionTypes.GET_USER_ACCOUNT,
+  type: ActionTypes.GET_DEV_ACCOUNT,
   payload: { account },
 });
-const saveCompanyForm = (companyForm: TypeModel<TypeFieldModel>) => ({
-  type: ActionTypes.GET_USER_COMPANY_FORM,
+const saveDevCompanyForm = (companyForm: TypeModel<TypeFieldModel>) => ({
+  type: ActionTypes.GET_DEV_COMPANY_FORM,
   payload: { companyForm },
 });
-const resetCompanyForm = () => ({ type: ActionTypes.RESET_USER_COMPANY_FORM });
+const resetDevCompanyForm = () => ({ type: ActionTypes.RESET_DEV_COMPANY_FORM });
 
-const getUserTypes = async (injectOrganizationType: boolean, configs: OcEditUserFormConfig[]) => {
+const getDevTypes = async (injectOrganizationType: boolean, configs: OcEditUserFormConfig[]) => {
   if (injectOrganizationType) {
     const orgTypesIDs = configs.map((config) => config?.organization?.type).filter((type) => type);
     const searchQuery =
-      orgTypesIDs?.length > 0 ? `{'userTypeId':{'$in': ['${orgTypesIDs.join("','")}']}}` : '';
+      orgTypesIDs?.length > 0 ? `{'developerTypeId':{'$in': ['${orgTypesIDs.join("','")}']}}` : '';
 
     if (searchQuery) {
       const response = await users.getUserTypes(searchQuery, '', 1, 100);
@@ -59,16 +59,16 @@ const getUserTypes = async (injectOrganizationType: boolean, configs: OcEditUser
   return EMPTY_TYPE_RESPONSE;
 };
 
-const getUserAccountTypes = async (injectAccountType: boolean, configs: OcEditUserFormConfig[]) => {
+const getDevAccountTypes = async (injectAccountType: boolean, configs: OcEditUserFormConfig[]) => {
   if (injectAccountType) {
     const accTypesIDs = configs.map((config) => config?.account?.type).filter((type) => type);
     const searchQuery =
       accTypesIDs?.length > 0
-        ? `{'userAccountTypeId':{'$in': ['${accTypesIDs.join("','")}']}}`
+        ? `{'developerAccountTypeId':{'$in': ['${accTypesIDs.join("','")}']}}`
         : '';
 
     if (searchQuery) {
-      const response = await userAccountTypes.getUserAccountTypes(1, 100, searchQuery);
+      const response = await developerAccountTypes.getUserAccountTypes(1, 100, searchQuery);
 
       return response.data;
     }
@@ -76,7 +76,7 @@ const getUserAccountTypes = async (injectAccountType: boolean, configs: OcEditUs
   return EMPTY_TYPE_RESPONSE;
 };
 
-export const loadUserProfileForm =
+export const loadDevProfileForm =
   (
     configs: OcEditUserFormConfig[],
     injectOrganizationTypes: boolean,
@@ -86,14 +86,14 @@ export const loadUserProfileForm =
     dispatch(startLoading());
 
     try {
-      const { list: userAccountTypes } = await getUserAccountTypes(injectAccountTypes, configs);
-      const { list: organizationTypes } = await getUserTypes(injectOrganizationTypes, configs);
+      const { list: userAccountTypes } = await getDevAccountTypes(injectAccountTypes, configs);
+      const { list: organizationTypes } = await getDevTypes(injectOrganizationTypes, configs);
 
       const isLoggedIn = storage.isUserLoggedIn();
-      const account = isLoggedIn ? await getUserAccount() : null;
+      const account = isLoggedIn ? await getDevAccount() : null;
 
-      const accTypes = keyBy(userAccountTypes, 'userAccountTypeId');
-      const orgTypes = keyBy(organizationTypes, 'userTypeId');
+      const accTypes = keyBy(userAccountTypes, 'developerAccountTypeId');
+      const orgTypes = keyBy(organizationTypes, 'developerTypeId');
 
       const newConfigs: OcEditUserFormConfig[] = cloneDeep(configs)
         .map((config) => {
@@ -142,9 +142,9 @@ export const loadUserProfileForm =
     }
   };
 
-export const saveUserData = (accountData: OcEditUserResult) => async (dispatch: Dispatch) => {
+export const saveDevData = (accountData: OcEditUserResult) => async (dispatch: Dispatch) => {
   try {
-    const { data: savedUser } = await userAccount.updateUserAccount(accountData);
+    const { data: savedUser } = await developerAccount.updateAccountFields(accountData);
     dispatch(saveAccount(savedUser));
     // eslint-disable-next-line
   } catch (error: any) {
@@ -152,13 +152,13 @@ export const saveUserData = (accountData: OcEditUserResult) => async (dispatch: 
   }
 };
 
-export const getUserAccount = async () => {
-  const { data: account } = await userAccount.getUserAccount();
+export const getDevAccount = async () => {
+  const { data: account } = await developerAccount.getUserAccount();
 
   return account;
 };
 
-export const getUserCompanyForm = () => async (dispatch: Dispatch) => {
+export const getDevCompanyForm = () => async (dispatch: Dispatch) => {
   dispatch(startLoading());
 
   try {
@@ -185,7 +185,7 @@ export const getUserCompanyForm = () => async (dispatch: Dispatch) => {
       formConfig.formId = uniqueId();
     }
 
-    dispatch(saveCompanyForm(formConfig));
+    dispatch(saveDevCompanyForm(formConfig));
     dispatch(finishLoading());
   } catch (error) {
     dispatch(finishLoading());
@@ -193,7 +193,7 @@ export const getUserCompanyForm = () => async (dispatch: Dispatch) => {
   }
 };
 
-export const clearUserCompanyForm = () => (dispatch: Dispatch) => dispatch(resetCompanyForm());
+export const clearUserCompanyForm = () => (dispatch: Dispatch) => dispatch(resetDevCompanyForm());
 
 // eslint-disable-next-line
 export const saveUserCompany = (value: any) => async (dispatch: Dispatch) => {

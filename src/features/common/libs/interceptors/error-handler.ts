@@ -1,5 +1,11 @@
 import { notify } from '@openchannel/react-common-components/dist/ui/common/atoms';
-import { auth, axiosRequest, interceptors, storage, InterceptorError } from '@openchannel/react-common-services';
+import {
+  auth,
+  axiosRequest,
+  interceptors,
+  storage,
+  InterceptorError,
+} from '@openchannel/react-common-services';
 
 import { store } from '../../../../store';
 import { setSession, removeSession } from '../../store/session/actions';

@@ -3,7 +3,11 @@ import { useDispatch } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { OcMenuUserGrid } from '@openchannel/react-common-components/dist/ui/management/organisms';
 import { useTypedSelector } from '../../../common/hooks';
-import { storage, UserAccountGridModel, UserGridActionModel } from '@openchannel/react-common-services';
+import {
+  storage,
+  UserAccountGridModel,
+  UserGridActionModel,
+} from '@openchannel/react-common-services';
 import { OcConfirmationModalComponent } from '@openchannel/react-common-components/dist/ui/common/organisms';
 import {
   getAllUsers,
@@ -121,7 +125,11 @@ const UserManagement: React.FC<UserManagementProps> = ({
 
   return (
     <>
-      <InviteUserModal userData={inviteModal.user} isOpened={inviteModal.isOpened} closeModal={closeInviteModal} />
+      <InviteUserModal
+        userData={inviteModal.user}
+        isOpened={inviteModal.isOpened}
+        closeModal={closeInviteModal}
+      />
       <OcConfirmationModalComponent
         isOpened={state.isOpened}
         onSubmit={deleteUserInModal}
@@ -141,7 +149,11 @@ const UserManagement: React.FC<UserManagementProps> = ({
         loader={null}
         style={{ overflow: 'initial' }}
       >
-        <OcMenuUserGrid onMenuClick={onMenuClick} onSort={catchSortChanges} properties={userProperties} />
+        <OcMenuUserGrid
+          onMenuClick={onMenuClick}
+          onSort={catchSortChanges}
+          properties={userProperties}
+        />
       </InfiniteScroll>
     </>
   );
