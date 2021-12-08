@@ -1,6 +1,5 @@
-import { ActionTypes } from './action-types';
 import { FullAppData, ChartStatisticFiledModel } from '@openchannel/react-common-components';
-import { statElement } from './constants';
+import { ActionTypes } from './action-types';
 import { Action, DataReducer } from './types';
 
 const initialState: DataReducer = {
@@ -26,37 +25,11 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
     case ActionTypes.SET_CHART: {
       const list: FullAppData[] = [];
       const apps: ChartStatisticFiledModel[] = [initialState.apps[0]];
-
       action.payload.list.forEach((item: FullAppData) => {
         if (item.status.value === 'approved') {
           apps.push({ id: item.appId, label: item.name, active: false });
         }
-
-        const newApp: FullAppData = {
-          appId: item.appId,
-          safeName: item.safeName,
-          customData: item.customData,
-          status: item.status,
-          developerId: item.developerId,
-          model: item.model,
-          name: item.name,
-          lastUpdated: item.lastUpdated,
-          isLive: item.isLive,
-          version: item.version,
-          submittedDate: item.submittedDate,
-          created: item.created,
-          rating: 0,
-          reviewCount: 0,
-          statistics: {
-            views: statElement,
-            downloads: statElement,
-            developerSales: statElement,
-            totalSales: statElement,
-            ownerships: statElement,
-            reviews: statElement,
-          },
-        };
-        list.push(newApp);
+        list.push(item);
       });
       return {
         ...state,
@@ -95,6 +68,22 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
         chart: { labelsX, labelsY, tabularLabels },
         count: labelsY.reduce((a: number, b: number) => a + b, 0),
         countText: `Total ${action.payload.fieldLabel}`,
+      };
+    }
+    case ActionTypes.SET_CHILD: {
+      const list = state.list.map((parent) => {
+        const exist = action.payload.list.find((child) => parent.appId === child.appId);
+        if (exist) {
+          return {
+            ...parent,
+            children: parent.children ? [...parent.children, exist] : [exist]
+          }
+        }
+        return parent;
+      });
+      return {
+        ...state,
+        list,
       };
     }
     default:
