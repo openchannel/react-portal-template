@@ -124,7 +124,7 @@ const Profile = (): JSX.Element => {
     <MainTemplate>
       <div className="bg-container height-unset">
         <OcNavigationBreadcrumbs
-          pageTitle="My profile"
+          pageTitle="My Profile"
           navigateText="Back"
           navigateClick={history.goBack}
         />
@@ -132,7 +132,7 @@ const Profile = (): JSX.Element => {
 
       <div className="container mb-8">
         <div className="page-navigation row">
-          <div className="col-md-3">
+          <div className="col-lg-3 col-xxl-2">
             <ul className="list-unstyled">
               <li>
                 <span
@@ -160,7 +160,7 @@ const Profile = (): JSX.Element => {
               </li>
             </ul>
           </div>
-          <div className="col-md-5 col-lg-4 pt-1">
+          <div className="col-lg-4 mt-3 col-xxl-6 mt-lg-1">
             {isSelectedPage === 'changePassword' && (
               <OcForm
                 formJsonData={formPassword}
@@ -181,6 +181,7 @@ const Profile = (): JSX.Element => {
           </div>
         </div>
       </div>
+      <div className="mt-8"></div>
     </MainTemplate>
   );
 };
