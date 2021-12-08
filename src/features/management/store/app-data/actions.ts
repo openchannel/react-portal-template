@@ -69,8 +69,7 @@ export const updateChartData =
 
 
  export const getAppsChildren = (parentList: FullAppData[]) => async (dispatch: Dispatch) => {
-    const parents = [...parentList];
-    const parentIds: string[] = parents.map(parent => parent.appId);
+    const parentIds: string[] = parentList.map(parent => parent.appId);
     
     if (parentIds.length > 0) {
         const childQuery = {
@@ -98,5 +97,5 @@ export const updateChartData =
         }
     }
 
-    return parents;
+    return parentList;
 }
