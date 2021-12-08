@@ -14,7 +14,7 @@ export const formPassword = {
       id: 'newPassword',
       label: 'New Password',
       type: 'password',
-      attributes: [],
+      attributes: { required: true },
       defaultValue: '',
     },
   ],
