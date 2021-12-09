@@ -95,7 +95,7 @@ const ManageApp = (): JSX.Element => {
               ascendingSortIcon={'assets/img/dropdown.svg'}
               defaultAppIcon={'assets/img/default-app-icon.svg'}
               properties={allAppsData}
-              noAppMessage={'No Apps Has Been Added Yet'}
+              noAppMessage={'No apps in your list'}
             />
           </div>
         </>

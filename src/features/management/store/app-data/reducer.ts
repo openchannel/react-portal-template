@@ -29,6 +29,8 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
         if (item.status.value === 'approved') {
           apps.push({ id: item.appId, label: item.name, active: false });
         }
+        item.status = item.parent && item.parent.status ? item.parent.status : item.status;
+        
         list.push(item);
       });
       return {
