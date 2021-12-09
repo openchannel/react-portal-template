@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux';
 import { FullAppData, ChartStatisticFiledModel } from '@openchannel/react-common-components';
 import { notify } from '@openchannel/react-common-components/dist/ui/common/atoms';
-import { chartService, AppVersionService,apps } from '@openchannel/react-common-services';
+import { chartService, appVersion, apps } from '@openchannel/react-common-services';
 import { appsConfig, query } from './constants';
 import { ActionTypes } from './action-types';
 import { notifyErrorResp } from 'features/common/libs/helpers';
@@ -24,7 +24,7 @@ export const setReducer = (
 
 export const appVersions = () => async (dispatch: Dispatch) => {
   try {
-    const { data } = await AppVersionService.getAppsVersions(
+    const { data } = await appVersion.getAppsVersions(
       appsConfig.data.pageNumber,
       appsConfig.data.count,
       sortQuery,
@@ -88,7 +88,7 @@ export const updateChartData =
         };
 
         try {
-          const { data } = await AppVersionService.getAppsVersions(
+          const { data } = await appVersion.getAppsVersions(
             appsConfig.data.pageNumber,
             appsConfig.data.count,
             sortQuery,
@@ -105,16 +105,14 @@ export const updateChartData =
 
 export const handleApp = (appData: AppListMenuAction) => async (dispatch: Dispatch) => {
   try {
-    console.log();
-    
     switch (appData.action) {
       case 'DELETE': {
         if( appData.isChild ) {
-          await AppVersionService.deleteAppVersion(appData.appId, appData.appVersion);
+          await appVersion.deleteAppVersion(appData.appId, appData.appVersion);
         } else {
           await apps.deleteApp(appData.appId);
         }
-        
+
         notify.success('Your app has been deleted');
         break;
       }

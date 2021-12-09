@@ -73,7 +73,7 @@ const ManageApp = (): JSX.Element => {
   );
 
   const handleManageApps = (appsData:AppListMenuAction) => {
-    setModalAppData({...appsData });
+    setModalAppData(appsData);
     switch (appsData.action) {
       case 'DELETE': {
         setState({
