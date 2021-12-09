@@ -105,9 +105,16 @@ export const updateChartData =
 
 export const handleApp = (appData: AppListMenuAction) => async (dispatch: Dispatch) => {
   try {
+    console.log();
+    
     switch (appData.action) {
       case 'DELETE': {
-        await AppVersionService.deleteAppVersion(appData.appId, appData.appVersion);
+        if( appData.isChild ) {
+          await AppVersionService.deleteAppVersion(appData.appId, appData.appVersion);
+        } else {
+          await apps.deleteApp(appData.appId);
+        }
+        
         notify.success('Your app has been deleted');
         break;
       }
