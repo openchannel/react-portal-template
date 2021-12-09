@@ -73,12 +73,13 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
       };
     }
     case ActionTypes.SET_CHILD: {
+
       const list = state.list.map((parent) => {
-        const exist = action.payload.list.find((child) => parent.appId === child.appId);
+        const exist = action.payload.list.filter((child) => parent.appId === child.appId);
         if (exist) {
           return {
             ...parent,
-            children: parent.children ? [...parent.children, exist] : [exist]
+            children: parent.children ? [...parent.children, ...exist] : exist
           }
         }
         return parent;

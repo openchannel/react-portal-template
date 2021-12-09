@@ -4,14 +4,16 @@ import { useDispatch } from 'react-redux';
 import { MainTemplate } from 'features/common/templates';
 import { OcNavigationBreadcrumbs } from '@openchannel/react-common-components/dist/ui/common/molecules';
 import { OcAppTable } from '@openchannel/react-common-components/dist/ui/portal/organisms';
+import { OcConfirmationModalComponent } from '@openchannel/react-common-components/dist/ui/common/organisms';
+import { AppListMenuAction } from '@openchannel/react-common-components/dist/ui/portal/models';
 import {
   ChartOptionsChange,
   OcChartComponent,
 } from '@openchannel/react-common-components/dist/ui/portal/organisms';
-import { defaultProps, appsConfig } from './constants';
-import { appVersions, updateChartData } from '../../store/app-data';
+import { defaultProps, appsConfig, initialConfirmAppModal, initialModalData } from './constants';
+import { appVersions, updateChartData, handleApp } from '../../store/app-data';
 import { useTypedSelector } from 'features/common/hooks';
-import { ChartDataType } from './types';
+import { ChartDataType, ConfirmUserModal } from './types';
 import './styles.scss';
 
 const ManageApp = (): JSX.Element => {
@@ -23,6 +25,8 @@ const ManageApp = (): JSX.Element => {
   }, []);
 
   const [chartState, setChartState] = React.useState<ChartDataType>(defaultProps);
+  const [state, setState] = React.useState<ConfirmUserModal>(initialConfirmAppModal);
+  const [modalAppData, setModalAppData] = React.useState<AppListMenuAction>(initialModalData);
 
   React.useEffect(() => {
     const period = chartState.chartData.periods.find((v) => v.active);
@@ -68,6 +72,43 @@ const ManageApp = (): JSX.Element => {
     [appData, chartState],
   );
 
+  const handleManageApps = (appsData:AppListMenuAction) => {
+    setModalAppData(appsData);
+    switch (appsData.action) {
+      case 'DELETE': {
+        setState({
+          isOpened: true,
+          type: 'danger',
+          modalTitle: 'Delete app',
+          modalText: 'Delete this app from the marketplace now?',
+          confirmButtonText: 'Yes, delete it',
+        });
+        break;
+      }
+      case 'SUBMIT': {
+        setState({
+          isOpened: true,
+          type: 'primary',
+          modalTitle: 'Submit app',
+          modalText: 'Submit this app to the marketplace now?',
+          confirmButtonText: 'Yes, submit it',
+        });
+        break;
+      }
+    }
+  };
+
+  const closeModal = () => {
+    setState(initialConfirmAppModal);
+    setModalAppData(initialModalData);
+  };
+
+  const handleSubmitModal = () => {
+    dispatch(handleApp(modalAppData));
+    setState(initialConfirmAppModal);
+    setModalAppData(initialModalData);
+  };
+
   return (
     <MainTemplate>
       <div className="bg-container manage-app-header">
@@ -96,8 +137,20 @@ const ManageApp = (): JSX.Element => {
               defaultAppIcon={'assets/img/default-app-icon.svg'}
               properties={allAppsData}
               noAppMessage={'No apps in your list'}
+              onMenuClick={handleManageApps}
             />
           </div>
+          <OcConfirmationModalComponent
+            isOpened={state.isOpened}
+            onSubmit={handleSubmitModal}
+            onClose={closeModal}
+            onCancel={closeModal}
+            modalTitle={state.modalTitle}
+            modalText={state.modalText}
+            confirmButtonText={state.confirmButtonText}
+            confirmButtonType={state.type}
+            rejectButtonText={state.rejectButtonText}
+          />
         </>
       </div>
     </MainTemplate>
