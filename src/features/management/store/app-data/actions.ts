@@ -1,9 +1,12 @@
 import { Dispatch } from 'redux';
 import { FullAppData, ChartStatisticFiledModel } from '@openchannel/react-common-components';
-import { chartService, AppVersionService } from '@openchannel/react-common-services';
+import { notify } from '@openchannel/react-common-components/dist/ui/common/atoms';
+import { chartService, AppVersionService,apps } from '@openchannel/react-common-services';
 import { appsConfig, query } from './constants';
 import { ActionTypes } from './action-types';
 import { notifyErrorResp } from 'features/common/libs/helpers';
+import { AppListMenuAction } from '@openchannel/react-common-components/dist/ui/portal/models';
+
 
 const sortOptionsQueryPattern = {
   created: (order: number) => `{'created': ${order}}`,
@@ -99,3 +102,26 @@ export const updateChartData =
 
     return parentList;
 }
+
+export const handleApp = (appData: AppListMenuAction) => async (dispatch: Dispatch) => {
+  try {
+    switch (appData.action) {
+      case 'DELETE': {
+        await AppVersionService.deleteAppVersion(appData.appId, appData.appVersion);
+        notify.success('Your app has been deleted');
+        break;
+      }
+      case 'SUBMIT': {
+        await apps.publishAppByVersion(appData.appId, {
+          version: appData.appVersion,
+          autoApprove: false,
+        });
+        notify.success('Your app has been submitted for approval');
+        break;
+      }
+    }
+    appVersions()(dispatch);
+  } catch (e) {
+    notifyErrorResp(e);
+  }
+};

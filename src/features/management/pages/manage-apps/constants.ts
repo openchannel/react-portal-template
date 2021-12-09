@@ -2,6 +2,9 @@ import {
   ChartStatisticDataModel,
   ChartLayoutTypeModel,
 } from '@openchannel/react-common-components/dist/ui/portal/organisms';
+import { AppListMenuAction } from '@openchannel/react-common-components/dist/ui/portal/models';
+import { ConfirmDeleteUserModal } from './types';
+
 
 export const chartPeriod: ChartStatisticDataModel = {
   labelsY: [],
@@ -65,5 +68,21 @@ export const appsConfig = {
     list: [],
     count: 30,
   },
-  options: ['Edit', 'Preview', 'Submit', 'Delete'],
+  options: ['EDIT', 'PREVIEW', 'SUBMIT', 'SUSPEND', 'DELETE'],
+};
+
+export const initialConfirmAppModal: ConfirmDeleteUserModal = {
+  isOpened: false,
+  type: 'primary',
+  modalTitle: '',
+  modalText: '',
+  confirmButtonText: '',
+  rejectButtonText: 'No, cancel',
+};
+
+export const initialModalData:AppListMenuAction = {
+  action: '',
+  appId: '',
+  appVersion: -1,
+  isChild: false
 };
