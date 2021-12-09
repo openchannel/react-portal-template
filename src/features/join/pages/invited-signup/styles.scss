@@ -17,6 +17,15 @@
   display: block;
   margin: 5rem auto 0;
   width: 412px;
+  & form .form__button {
+    width: 100%;
+  } 
+  & .font-s{
+    font-size: 12px;
+    & a{
+      font-weight: 500;
+    }
+  }
 }
 
 .consent-checkbox {
