@@ -4,11 +4,11 @@ export const SOCIAL_LINKS = [
     iconSrc: '/assets/img/facebook-icon.svg',
     iconAlt: 'facebook-icon',
   },
-  // {
-  //   link: 'https://www.instagram.com/',
-  //   iconSrc: '/assets/img/instagram.svg',
-  //   iconAlt: 'instagram-icon',
-  // },
+  {
+    link: 'https://www.instagram.com/',
+    iconSrc: '/assets/img/instagram.svg',
+    iconAlt: 'instagram-icon',
+  },
   {
     link: 'https://www.linkedin.com/',
     iconSrc: '/assets/img/linkedin.svg',

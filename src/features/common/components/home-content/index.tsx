@@ -22,7 +22,7 @@ export const HomeContent = () => {
   };
   return (
     <>
-      <div className="home__hero bg-container bg-a">
+      <div className="home__hero bg-container min-height-auto">
         <div className="container d-flex flex-column align-items-center justify-content-center">
           <h1 className="home__hero-title text-center">{home?.pageInfoTitle}</h1>
           <p className="home__hero-description text-secondary text-center">
@@ -88,7 +88,7 @@ export const HomeContent = () => {
           </div>
         </div>
       </div>
-      <div className="home__technology bg-container bg-a">
+      <div className="home__technology bg-container min-height-auto">
         <div className="container d-flex flex-column align-items-center justify-content-center">
           <h2 className="home__technology-title text-center">
             How developers are using the Open Channel
