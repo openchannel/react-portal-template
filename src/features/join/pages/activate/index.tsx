@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { OcActivation } from '@openchannel/react-common-components/dist/ui/auth/organisms';
-import companyLogo from '../../../../../public/assets/img/company-logo-2x.png';
+import companyLogo from '../../../../../public/assets/img/logo-company-2x.png';
 import { getUserToken, LocationParams, requiredField } from '../constants';
 import { isEmptyInputValue } from '@openchannel/react-common-components/dist/ui/form/lib';
 import { useDispatch } from 'react-redux';
