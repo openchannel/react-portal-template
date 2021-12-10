@@ -22,7 +22,7 @@ export const HomeContent = () => {
   };
   return (
     <>
-      <div className="home__hero bg-container bg-a">
+      <div className="home__hero bg-container min-height-auto">
         <div className="container d-flex flex-column align-items-center justify-content-center">
           <h1 className="home__hero-title text-center">{home?.pageInfoTitle}</h1>
           <p className="home__hero-description text-secondary text-center">
@@ -88,7 +88,7 @@ export const HomeContent = () => {
           </div>
         </div>
       </div>
-      <div className="home__technology bg-container bg-a">
+      <div className="home__technology bg-container min-height-auto">
         <div className="container d-flex flex-column align-items-center justify-content-center">
           <h2 className="home__technology-title text-center">
             How developers are using the Open Channel
@@ -160,7 +160,7 @@ export const HomeContent = () => {
             <p className="home__approach-card-text text-secondary">
               Just click
               <a href="/" className="home__approach-card-link link font-med">
-                Become a Seller
+                &nbsp;Become a Seller&nbsp;
               </a>
               and give us a few pieces of information about your 1-Click App idea and your company.
               We&apos;ll respond with next steps or additional questions.
@@ -175,11 +175,11 @@ export const HomeContent = () => {
               Quickly and simply build a VM image on Open Channel manually, or automate via Fabric
               and Packer,
               <a href="/" className="home__approach-card-link link font-med">
-                then check its quality and readiness with our tools.
+                &nbsp;then check its quality and readiness with our tools.&nbsp;
               </a>
               Or you can simply build a Kubernetes app with a single
               <a href="/" className="home__approach-card-link link font-med">
-                PR on our repo.
+                &nbsp;PR on our repo.&nbsp;
               </a>
             </p>
           </div>

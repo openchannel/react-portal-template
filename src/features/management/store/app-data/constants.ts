@@ -27,9 +27,3 @@ export const query = {
     },
   ],
 };
-
-export const statElement = {
-  '90day': 0,
-  '30day': 0,
-  total: 0,
-};

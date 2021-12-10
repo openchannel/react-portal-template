@@ -12,7 +12,7 @@ const GetStarted = () => {
     history.push(home?.bottomCalloutButtonLocation || '/');
   };
   return (
-    <div className="bg-container mt-5 py-8 min-height-auto">
+    <div className="home__register bg-container min-height-auto">
       <div className="container">
         <OcGetStartedComponent
           getStartedType="home"

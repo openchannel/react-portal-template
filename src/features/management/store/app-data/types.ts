@@ -6,7 +6,7 @@ import {
 } from '@openchannel/react-common-components';
 
 export interface Action {
-  type: ActionTypes.SET_CHART | ActionTypes.SET_APP;
+  type: ActionTypes.SET_CHART | ActionTypes.SET_APP | ActionTypes.SET_CHILD;
   payload: {
     data: Array<[number]>;
     periodVal: string;
