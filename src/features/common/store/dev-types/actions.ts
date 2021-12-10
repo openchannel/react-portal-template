@@ -11,6 +11,8 @@ import {
   developerAccountTypes,
   users,
   storage,
+  developerService,
+  DeveloperTypeService,
 } from '@openchannel/react-common-services';
 import { Dispatch } from 'redux';
 import { cloneDeep, keyBy, get, uniqueId } from 'lodash';
@@ -50,7 +52,7 @@ const getDevTypes = async (injectOrganizationType: boolean, configs: OcEditUserF
       orgTypesIDs?.length > 0 ? `{'developerTypeId':{'$in': ['${orgTypesIDs.join("','")}']}}` : '';
 
     if (searchQuery) {
-      const response = await users.getUserTypes(searchQuery, '', 1, 100);
+      const response = await developerService.getDeveloper();
 
       return response.data;
     }
@@ -162,12 +164,12 @@ export const getDevCompanyForm = () => async (dispatch: Dispatch) => {
   dispatch(startLoading());
 
   try {
-    const { data: company } = await users.getUserCompany();
+    const { data: company } = await developerService.getDeveloper();
     let formConfig: TypeModel<TypeFieldModel>;
 
     try {
       if (company.type != null) {
-        const { data: typeDefinition } = await users.getUserTypeDefinition(company.type);
+        const { data: typeDefinition } = await DeveloperTypeService.getDeveloperType(company.type);
         formConfig = TypeMapperUtils.createFormConfig(typeDefinition, company);
       } else {
         formConfig = TypeMapperUtils.createFormConfig(defaultFormConfig, company);
@@ -193,10 +195,10 @@ export const getDevCompanyForm = () => async (dispatch: Dispatch) => {
   }
 };
 
-export const clearUserCompanyForm = () => (dispatch: Dispatch) => dispatch(resetDevCompanyForm());
+export const clearDevCompanyForm = () => (dispatch: Dispatch) => dispatch(resetDevCompanyForm());
 
 // eslint-disable-next-line
-export const saveUserCompany = (value: any) => async (dispatch: Dispatch) => {
+export const saveDevCompany = (value: any) => async (dispatch: Dispatch) => {
   try {
     const valueForSaving = TypeMapperUtils.buildDataForSaving(value);
     await users.updateUserCompany(valueForSaving);

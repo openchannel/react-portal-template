@@ -9,13 +9,20 @@ import {
   UserGridActionModel,
 } from '@openchannel/react-common-services';
 import { OcConfirmationModalComponent } from '@openchannel/react-common-components/dist/ui/common/organisms';
+// import {
+//   getAllUsers,
+//   sortMyCompany,
+//   clearUserProperties,
+//   deleteUserInvite,
+//   deleteUserAccount,
+// } from '../../../common/store/user-invites';
 import {
-  getAllUsers,
+  getAllDevelopers,
   sortMyCompany,
   clearUserProperties,
   deleteUserInvite,
   deleteUserAccount,
-} from '../../../common/store/user-invites';
+} from '../../../common/store/dev-invites';
 
 import { getUserByAction } from './utils';
 import { ConfirmDeleteUserModal, UserManagementProps } from './types';
@@ -39,7 +46,7 @@ const UserManagement: React.FC<UserManagementProps> = ({
   };
 
   const loadPage = (page: number) => {
-    dispatch(getAllUsers(page, sortQuery));
+    dispatch(getAllDevelopers(page, sortQuery));
   };
 
   React.useEffect(() => {

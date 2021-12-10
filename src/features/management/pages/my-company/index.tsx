@@ -52,7 +52,7 @@ const MyCompany = (): JSX.Element => {
 
   return (
     <MainTemplate>
-      <div className="bg-container height-unset">
+      <div className="bg-container my-company-nav height-unset">
         <OcNavigationBreadcrumbs
           pageTitle="My company"
           navigateText="Back"
@@ -64,9 +64,9 @@ const MyCompany = (): JSX.Element => {
           buttonClick={openInviteModal}
         />
       </div>
-      <div className="container mb-8">
+      <div className="container my-company-container">
         <div className="row pt-5">
-          <div className="col-md-3 col-lg-2 col-xl-3">
+          <div className="col-lg-2 col-xl-3 col-xxl-2">
             <ul className="list-unstyled">
               {filterPagesByUserType.map((elem) => (
                 <li className="py-1" key={elem.pageId}>
@@ -84,7 +84,7 @@ const MyCompany = (): JSX.Element => {
               ))}
             </ul>
           </div>
-          <div className="col-md-9 col-lg-10 col-xl-9 pt-1">
+          <div className="col-lg-10 col-xl-9 col-xxl-10 mt-3 mt-lg-1 mb-8">
             {selectedPage === pageIds.company && <CompanyDetails />}
             {selectedPage === pageIds.profile && (
               <UserManagement
