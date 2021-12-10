@@ -6,14 +6,14 @@ import {
 
 import { ConfirmDeleteUserModal, Page } from './types';
 
-export const pageIds = {
-  company: 'company',
-  profile: 'profile',
+export const myCompanyRoutes = {
+  userManagement: '/my-company/user-management',
+  companyDetails: '/my-company/company-details',
 };
 
 export const page: Page[] = [
   {
-    pageId: pageIds.company,
+    pageId: myCompanyRoutes.companyDetails,
     placeholder: 'Company details',
     permissions: [
       {
@@ -23,7 +23,7 @@ export const page: Page[] = [
     ],
   },
   {
-    pageId: pageIds.profile,
+    pageId: myCompanyRoutes.userManagement,
     placeholder: 'User management',
     permissions: [
       {

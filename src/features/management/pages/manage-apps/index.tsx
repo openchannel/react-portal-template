@@ -21,7 +21,7 @@ const ManageApp = (): JSX.Element => {
   const history = useHistory();
   const dispatch = useDispatch();
   const onClickPass = React.useCallback(() => {
-    history.push('/create');
+    history.push('/manage-apps/create');
   }, []);
 
   const [chartState, setChartState] = React.useState<ChartDataType>(defaultProps);
@@ -95,6 +95,9 @@ const ManageApp = (): JSX.Element => {
         });
         break;
       }
+      case 'EDIT': {
+        history.push(`/manage-apps/edit/${appsData.appId}/${appsData.appVersion}`);
+      }
     }
   };
 
@@ -108,7 +111,6 @@ const ManageApp = (): JSX.Element => {
     setState(initialConfirmAppModal);
     setModalAppData(initialModalData);
   };
-
   return (
     <MainTemplate>
       <div className="bg-container manage-app-header">
@@ -119,7 +121,6 @@ const ManageApp = (): JSX.Element => {
         />
       </div>
       <div className="container manage-app">
-        <>
           <div className="container my-3 px-0">
             <OcChartComponent
               chartData={chartState.chartData}
@@ -151,7 +152,6 @@ const ManageApp = (): JSX.Element => {
             confirmButtonType={state.type}
             rejectButtonText={state.rejectButtonText}
           />
-        </>
       </div>
     </MainTemplate>
   );

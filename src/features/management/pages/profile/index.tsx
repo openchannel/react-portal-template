@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { set, merge } from 'lodash';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { ChangePasswordRequest } from '@openchannel/react-common-services';
 import { notify } from '@openchannel/react-common-components/dist/ui/common/atoms';
 import { OcEditUserFormComponent } from '@openchannel/react-common-components/dist/ui/auth/organisms';
@@ -17,9 +17,7 @@ import { useTypedSelector } from 'features/common/hooks';
 import { MainTemplate } from 'features/common/templates';
 import { changePassword } from 'features/common/store/session';
 import { loadDevProfileForm, saveDevData } from 'features/common/store/dev-types';
-
 import { formConfigsWithoutTypeData, formPassword } from './constants';
-
 import './styles.scss';
 
 const mappedFileService = {
@@ -28,37 +26,18 @@ const mappedFileService = {
 };
 
 const Profile = (): JSX.Element => {
-  const [isSelectedPage, setSelectedPage] = React.useState('myProfile');
   const dispatch = useDispatch();
   const history = useHistory();
+  const { pathname } = useLocation();
+
   const { configs, account, isLoading } = useTypedSelector(({ userDevTypes }) => userDevTypes);
 
   const onClickPass = React.useCallback((e) => {
-    switch (e.target.dataset.link) {
-      case 'myProfile':
-        history.replace('/my-profile/profile-details');
-        break;
-      case 'changePassword':
-        history.replace('/my-profile/password');
-        break;
-      default:
-        break;
-    }
-    setSelectedPage(e.target.dataset.link);
-  }, []);
+    history.push(e.target.dataset.link);
+  }, [history.push]);
 
   React.useEffect(() => {
     dispatch(loadDevProfileForm(formConfigsWithoutTypeData, false, true));
-    switch (isSelectedPage) {
-      case 'myProfile':
-        history.replace('/my-profile/profile-details');
-        break;
-      case 'changePassword':
-        history.replace('/my-profile/password');
-        break;
-      default:
-        break;
-    }
   }, []);
 
   const handleChangePasswordSubmit = async (
@@ -136,10 +115,10 @@ const Profile = (): JSX.Element => {
             <ul className="list-unstyled">
               <li>
                 <span
-                  className={`font-m ${isSelectedPage === 'myProfile' ? 'active-link' : ''}`}
+                  className={`font-m ${pathname === '/my-profile/profile-details' ? 'active-link' : ''}`}
                   role="button"
                   tabIndex={0}
-                  data-link="myProfile"
+                  data-link="profile-details"
                   onClick={onClickPass}
                   onKeyDown={onClickPass}
                 >
@@ -148,7 +127,7 @@ const Profile = (): JSX.Element => {
               </li>
               <li>
                 <span
-                  className={`font-m ${isSelectedPage === 'changePassword' ? 'active-link' : ''}`}
+                  className={`font-m ${pathname === '/my-profile/changePassword' ? 'active-link' : ''}`}
                   role="button"
                   tabIndex={0}
                   data-link="changePassword"
@@ -161,7 +140,7 @@ const Profile = (): JSX.Element => {
             </ul>
           </div>
           <div className="col-lg-4 mt-3 col-xxl-6 mt-lg-1 mt-8">
-            {isSelectedPage === 'changePassword' && (
+            {pathname === '/my-profile/changePassword' && (
               <OcForm
                 formJsonData={formPassword}
                 onSubmit={handleChangePasswordSubmit}
@@ -170,7 +149,7 @@ const Profile = (): JSX.Element => {
                 service={apps}
               />
             )}
-            {isSelectedPage === 'myProfile' && !isLoading && (
+            {pathname === '/my-profile/profile-details' && !isLoading && (
               <OcEditUserFormComponent
                 formConfigs={configs}
                 defaultFormType={defaultProfileFormType}
