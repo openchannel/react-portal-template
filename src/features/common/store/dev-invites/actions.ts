@@ -5,9 +5,7 @@ import {
   developerRoleService,
   UserAccountGridModel,
   userInvites,
-  // userRole,
   UsersGridParametersModel,
-  userAccount,
 } from '@openchannel/react-common-services';
 import { notify } from '@openchannel/react-common-components/dist/ui/common/atoms';
 import { GetState } from '../../../../types';
@@ -21,7 +19,6 @@ import {
 } from '../utils';
 import { ActionTypes } from './action-types';
 import { SortQuery } from './types';
-import { getAllUsers } from '..';
 
 export const setRoles = (payload: DevRoles) => {
   return { type: ActionTypes.SET_LIST_ROLES, payload };
@@ -157,10 +154,10 @@ export const clearUserProperties = () => (dispatch: Dispatch) => {
 export const inviteUser =
   (userData: UserData, templateId?: string) => async (dispatch: Dispatch, getState: GetState) => {
     try {
-      await userInvites.sendUserInvite('', userData, templateId);
+      await userInvites.sendDeveloperInvite('', userData, templateId);
 
       notify.success('Invitation sent');
-      getAllUsers(1, getState().userInvites.sortQuery)(dispatch, getState);
+      getAllDevelopers(1, getState().userInvites.sortQuery)(dispatch, getState);
     } catch {
       // do nothing
     }
@@ -170,9 +167,9 @@ export const updateUser =
   (userData: UserData, inviteId?: string) => async (dispatch: Dispatch, getState: GetState) => {
     try {
       if (inviteId) {
-        await userInvites.editUserInvite(inviteId, userData);
+        await userInvites.editDeveloperInvite(inviteId, userData);
       } else {
-        await userAccount.updateUserAccountFieldsForAnotherUser(
+        await developerAccount.updateAccountFieldsForAnotherUser(
           getAccountId(userData),
           true,
           userData,
@@ -180,7 +177,7 @@ export const updateUser =
       }
 
       notify.success('User details have been updated');
-      getAllUsers(1, getState().userInvites.sortQuery)(dispatch, getState);
+      getAllDevelopers(1, getState().userInvites.sortQuery)(dispatch, getState);
     } catch {
       // do nothing
     }
@@ -202,26 +199,22 @@ const deleteUserFromResultArray =
     dispatch(saveUserProperties(newUserProperties));
   };
 
-export const deleteUserInvite =
-  (user: UserAccountGridModel, userId: string) =>
-  async (dispatch: Dispatch, getState: GetState) => {
-    try {
-      await userInvites.deleteUserInvite(userId);
-      notify.success('Invite has been deleted');
-      deleteUserFromResultArray(user)(dispatch, getState);
-    } catch {
-      // do nothing
-    }
-  };
+export const deleteUserInvite = (dev: any) => async (dispatch: Dispatch, getState: GetState) => {
+  try {
+    await userInvites.deleteDeveloperInvite(dev.developerInviteId);
+    notify.success('Invite has been deleted');
+    deleteUserFromResultArray(dev)(dispatch, getState);
+  } catch {
+    // do nothing
+  }
+};
 
-export const deleteUserAccount =
-  (user: UserAccountGridModel, userId: string) =>
-  async (dispatch: Dispatch, getState: GetState) => {
-    try {
-      await userAccount.deleteUserAccount(userId);
-      notify.success('User has been deleted from your organization');
-      deleteUserFromResultArray(user)(dispatch, getState);
-    } catch {
-      // do nothing
-    }
-  };
+export const deleteUserAccount = (dev: any) => async (dispatch: Dispatch, getState: GetState) => {
+  try {
+    await developerAccount.deleteDevAccount(dev.developerId);
+    notify.success('User has been deleted from your organization');
+    deleteUserFromResultArray(dev)(dispatch, getState);
+  } catch {
+    // do nothing
+  }
+};
