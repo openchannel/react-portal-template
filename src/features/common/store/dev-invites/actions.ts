@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dispatch } from 'redux';
 import {
-  InviteUserModel,
-  UserAccount,
-  userAccount,
+  InviteDeveloperModel,
+  developerAccount,
+  developerRoleService,
   UserAccountGridModel,
   userInvites,
-  userRole,
   UsersGridParametersModel,
 } from '@openchannel/react-common-services';
 import { notify } from '@openchannel/react-common-components/dist/ui/common/atoms';
@@ -13,15 +13,15 @@ import { GetState } from '../../../../types';
 import { UserData } from '../../../management/pages/my-company/types';
 import {
   getAccountId,
-  mapUserRoles,
+  mapDevRoles,
   mapToGridUserFromInvite,
-  mapToGridUserFromUser,
-  UserRoles,
+  mapToGridUserFromDeveloper,
+  DevRoles,
 } from '../utils';
 import { ActionTypes } from './action-types';
 import { SortQuery } from './types';
 
-export const setRoles = (payload: UserRoles) => {
+export const setRoles = (payload: DevRoles) => {
   return { type: ActionTypes.SET_LIST_ROLES, payload };
 };
 export const saveUserProperties = (payload: UsersGridParametersModel) => {
@@ -38,7 +38,7 @@ const getSortQuery = (sortBy: string, prevSortQuery: SortQuery): SortQuery => {
     : { sortBy, sortOrder: 1 };
 };
 
-export const getAllUsers =
+export const getAllDevelopers =
   (pageNumber: number, sortQuery: SortQuery) => async (dispatch: Dispatch, getState: GetState) => {
     const {
       userInvites: { userProperties },
@@ -54,23 +54,24 @@ export const getAllUsers =
     const oldInvites = [...userProperties.data.list];
     const sortQueryStr = JSON.stringify({ [sortQuery.sortBy]: sortQuery.sortOrder });
     const fetchData = await Promise.allSettled([
-      userInvites.getUserInvites(pageNumber, 10, sortQueryStr),
-      userAccount.getUserAccounts(pageNumber, 10, sortQueryStr),
-      userRole.getUserRoles(1, 100),
+      userInvites.getDeveloperInvites(pageNumber, 10, sortQueryStr),
+      developerAccount.getDeveloperAccounts(pageNumber, 10, sortQueryStr),
+      developerRoleService.getDeveloperRoles(1, 100),
     ]);
 
     const [invites, accounts, roles] = fetchData;
 
     let nextInvites: UserAccountGridModel[] = [];
-    let nextAccount: UserAccount[] = [];
-    let userRoles: UserRoles = {};
+    //eslint-disable-next-line
+    let nextAccount: any = [];
+    let userRoles: DevRoles = {};
 
     if (roles.status === 'fulfilled') {
-      userRoles = mapUserRoles(roles.value.data);
+      userRoles = mapDevRoles(roles.value.data);
       dispatch(setRoles(userRoles));
     }
     if (invites.status === 'fulfilled') {
-      nextInvites = invites.value.data.list.map((user: InviteUserModel) =>
+      nextInvites = invites.value.data.list.map((user: InviteDeveloperModel) =>
         mapToGridUserFromInvite(user, userRoles),
       );
 
@@ -89,8 +90,8 @@ export const getAllUsers =
     }
 
     if (accounts.status === 'fulfilled') {
-      nextAccount = accounts.value.data.list.map((user: UserAccount) =>
-        mapToGridUserFromUser(user, userRoles),
+      nextAccount = accounts.value.data.list.map((user) =>
+        mapToGridUserFromDeveloper(user, userRoles),
       );
     }
 
@@ -109,18 +110,19 @@ export const sortMyCompany = (sortBy: string) => async (dispatch: Dispatch, getS
 
   const fetchDataSort = await Promise.allSettled([
     userInvites.getUserInvites(1, 10, nextSortQueryStr),
-    userAccount.getUserAccounts(1, 10, nextSortQueryStr),
-    userRole.getUserRoles(1, 100),
+    developerAccount.getDeveloperAccounts(1, 10, nextSortQueryStr),
+    developerRoleService.getDeveloperRoles(1, 100),
   ]);
 
   const [invites, accounts, roles] = fetchDataSort;
 
   let nextInvites: UserAccountGridModel[] = [];
-  let nextAccount: UserAccount[] = [];
-  let userRoles: UserRoles = {};
+  //eslint-disable-next-line
+  let nextAccount: any[] = [];
+  let userRoles: DevRoles = {};
 
   if (roles.status === 'fulfilled') {
-    userRoles = mapUserRoles(roles.value.data);
+    userRoles = mapDevRoles(roles.value.data);
     dispatch(setRoles(userRoles));
   }
 
@@ -129,7 +131,9 @@ export const sortMyCompany = (sortBy: string) => async (dispatch: Dispatch, getS
   }
 
   if (accounts.status === 'fulfilled') {
-    nextAccount = accounts.value.data.list.map((user) => mapToGridUserFromUser(user, userRoles));
+    nextAccount = accounts.value.data.list.map((user) =>
+      mapToGridUserFromDeveloper(user, userRoles),
+    );
   }
 
   dispatch(
@@ -151,10 +155,10 @@ export const clearUserProperties = () => (dispatch: Dispatch) => {
 export const inviteUser =
   (userData: UserData, templateId?: string) => async (dispatch: Dispatch, getState: GetState) => {
     try {
-      await userInvites.sendUserInvite('', userData, templateId);
+      await userInvites.sendDeveloperInvite('', userData, templateId);
 
       notify.success('Invitation sent');
-      getAllUsers(1, getState().userInvites.sortQuery)(dispatch, getState);
+      getAllDevelopers(1, getState().userInvites.sortQuery)(dispatch, getState);
     } catch {
       // do nothing
     }
@@ -164,9 +168,9 @@ export const updateUser =
   (userData: UserData, inviteId?: string) => async (dispatch: Dispatch, getState: GetState) => {
     try {
       if (inviteId) {
-        await userInvites.editUserInvite(inviteId, userData);
+        await userInvites.editDeveloperInvite(inviteId, userData);
       } else {
-        await userAccount.updateUserAccountFieldsForAnotherUser(
+        await developerAccount.updateAccountFieldsForAnotherUser(
           getAccountId(userData),
           true,
           userData,
@@ -174,7 +178,7 @@ export const updateUser =
       }
 
       notify.success('User details have been updated');
-      getAllUsers(1, getState().userInvites.sortQuery)(dispatch, getState);
+      getAllDevelopers(1, getState().userInvites.sortQuery)(dispatch, getState);
     } catch {
       // do nothing
     }
@@ -196,26 +200,22 @@ const deleteUserFromResultArray =
     dispatch(saveUserProperties(newUserProperties));
   };
 
-export const deleteUserInvite =
-  (user: UserAccountGridModel, userId: string) =>
-  async (dispatch: Dispatch, getState: GetState) => {
-    try {
-      await userInvites.deleteUserInvite(userId);
-      notify.success('Invite has been deleted');
-      deleteUserFromResultArray(user)(dispatch, getState);
-    } catch {
-      // do nothing
-    }
-  };
+export const deleteUserInvite = (dev: any) => async (dispatch: Dispatch, getState: GetState) => {
+  try {
+    await userInvites.deleteDeveloperInvite(dev.developerInviteId);
+    notify.success('Invite has been deleted');
+    deleteUserFromResultArray(dev)(dispatch, getState);
+  } catch {
+    // do nothing
+  }
+};
 
-export const deleteUserAccount =
-  (user: UserAccountGridModel, userId: string) =>
-  async (dispatch: Dispatch, getState: GetState) => {
-    try {
-      await userAccount.deleteUserAccount(userId);
-      notify.success('User has been deleted from your organization');
-      deleteUserFromResultArray(user)(dispatch, getState);
-    } catch {
-      // do nothing
-    }
-  };
+export const deleteUserAccount = (dev: any) => async (dispatch: Dispatch, getState: GetState) => {
+  try {
+    await developerAccount.deleteDevAccount(dev.developerId);
+    notify.success('User has been deleted from your organization');
+    deleteUserFromResultArray(dev)(dispatch, getState);
+  } catch {
+    // do nothing
+  }
+};

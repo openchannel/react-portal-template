@@ -8,10 +8,10 @@ import {
 } from '@openchannel/react-common-components/dist/ui/common/organisms';
 
 import { useTypedSelector } from '../../../../common/hooks';
-import { inviteUser, updateUser } from '../../../../common/store/user-invites';
+import { inviteUser, updateUser } from '../../../../common/store/dev-invites';
 import { InviteUserModalProps, UserData } from '../types';
 
-const InviteUserModal: React.FC<InviteUserModalProps> = React.memo(
+const InviteDevModal: React.FC<InviteUserModalProps> = React.memo(
   ({ userData, isOpened, closeModal }) => {
     const dispatch = useDispatch();
     const { listRoles } = useTypedSelector(({ userInvites }) => userInvites);
@@ -101,4 +101,4 @@ const InviteUserModal: React.FC<InviteUserModalProps> = React.memo(
   },
 );
 
-export default InviteUserModal;
+export default InviteDevModal;

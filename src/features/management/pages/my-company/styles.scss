@@ -9,8 +9,19 @@
   }
 }
 .active-link {
-  color: #537cfd !important;
+  color: $link-primary !important;
   @include font-medium();
+  @include media-breakpoint-md {
+    color: #333 !important;
+    border-bottom: 3px solid $link-primary;
+    padding-bottom: 1rem;
+  }
+}
+.my-company-nav {
+  .main-container {
+    padding: 16px;
+    min-height: 96px;
+  }
 }
 
 ul.list-unstyled {
@@ -56,6 +67,13 @@ ul.list-unstyled {
   line-height: 40px;
 }
 
-.button-container {
-  width: 255px;
+.my-company-container {
+  .form {
+    .form__buttons {
+      margin: 0;
+    }
+    .form__button {
+      min-width: 256px;
+    }
+  }
 }

@@ -10,16 +10,16 @@ import {
 } from '@openchannel/react-common-services';
 import { OcConfirmationModalComponent } from '@openchannel/react-common-components/dist/ui/common/organisms';
 import {
-  getAllUsers,
+  getAllDevelopers,
   sortMyCompany,
   clearUserProperties,
   deleteUserInvite,
   deleteUserAccount,
-} from '../../../common/store/user-invites';
+} from '../../../common/store/dev-invites';
 
 import { getUserByAction } from './utils';
 import { ConfirmDeleteUserModal, UserManagementProps } from './types';
-import InviteUserModal from './components/invite-user-modal';
+import InviteDevModal from './components/invite-dev-modal';
 import { initialConfirmDeleteUserModal } from './constants';
 
 const UserManagement: React.FC<UserManagementProps> = ({
@@ -39,7 +39,7 @@ const UserManagement: React.FC<UserManagementProps> = ({
   };
 
   const loadPage = (page: number) => {
-    dispatch(getAllUsers(page, sortQuery));
+    dispatch(getAllDevelopers(page, sortQuery));
   };
 
   React.useEffect(() => {
@@ -111,12 +111,12 @@ const UserManagement: React.FC<UserManagementProps> = ({
 
   const deleteUserInModal = async () => {
     if (state.type === 'invite') {
-      await dispatch(deleteUserInvite(state.user, state.userId!));
+      await dispatch(deleteUserInvite(state.user));
     }
 
     if (state.type === 'user') {
       if (state?.user?.userAccountId !== storage.getUserDetails()?.individualId) {
-        await dispatch(deleteUserAccount(state.user, state.userId!));
+        await dispatch(deleteUserAccount(state.user));
       }
     }
 
@@ -125,7 +125,7 @@ const UserManagement: React.FC<UserManagementProps> = ({
 
   return (
     <>
-      <InviteUserModal
+      <InviteDevModal
         userData={inviteModal.user}
         isOpened={inviteModal.isOpened}
         closeModal={closeInviteModal}
