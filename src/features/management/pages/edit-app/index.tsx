@@ -41,12 +41,6 @@ const EditApp = (): JSX.Element => {
     dispatch(updateChartData(period!, field!, appToEdit));
     dispatch(getAppTypes(params.appId, parseInt(params.version, 10)));
 
-    window.onpopstate = (event:any) => {
-      event.preventDefault();
-      event.stopPropagation();
-      handleEditFormCancel();
-    };
-
     return () => {
       dispatch(updateFields(selectedType, null));
     };
