@@ -23,7 +23,7 @@ const ManageApp = (): JSX.Element => {
   const onClickPass = React.useCallback(() => {
     history.push('/manage-apps/create');
   }, []);
-
+  
   const [chartState, setChartState] = React.useState<ChartDataType>(defaultProps);
   const [state, setState] = React.useState<ConfirmUserModal>(initialConfirmAppModal);
   const [modalAppData, setModalAppData] = React.useState<AppListMenuAction>(initialModalData);
@@ -40,7 +40,7 @@ const ManageApp = (): JSX.Element => {
   React.useEffect(() => {
     const allChartData: ChartDataType = {
       ...chartState,
-      chartData: { ...chartState.chartData, apps: appData.apps, data: appData.chart },
+      chartData: { ...chartState.chartData, apps: appData.apps, data: appData.chart.data },
       count: appData.count,
       countText: appData.countText,
     };
@@ -127,7 +127,7 @@ const ManageApp = (): JSX.Element => {
               count={chartState.count}
               countText={chartState.countText}
               changeChartOptions={changeChartOptions}
-              downloadUrl={'assets/img/cloud-download.svg'}
+              downloadUrl={'/assets/img/cloud-download.svg'}
               activeDataType="graph"
             />
           </div>

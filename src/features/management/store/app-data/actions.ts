@@ -1,11 +1,12 @@
 import { Dispatch } from 'redux';
-import { FullAppData, ChartStatisticFiledModel } from '@openchannel/react-common-components';
+import { FullAppData, ChartStatisticFiledModel, AppTypeModel } from '@openchannel/react-common-components';
 import { notify } from '@openchannel/react-common-components/dist/ui/common/atoms';
-import { chartService, appVersion, apps } from '@openchannel/react-common-services';
+import { chartService, appVersion, apps, AppTypeService } from '@openchannel/react-common-services';
 import { appsConfig, query } from './constants';
 import { ActionTypes } from './action-types';
 import { notifyErrorResp } from 'features/common/libs/helpers';
 import { AppListMenuAction } from '@openchannel/react-common-components/dist/ui/portal/models';
+import { AppTypesList } from './types';
 
 
 const sortOptionsQueryPattern = {
@@ -18,6 +19,17 @@ const sortQuery = sortOptionsQueryPattern.created(-1);
 export const setReducer = (
   type: string,
   val: { data: FullAppData; periodVal: string; fieldLabel: string; appVal: string },
+) => {
+  return { type, payload: val };
+};
+
+export const setChartData = (data: number[][], appId: string, field: ChartStatisticFiledModel, period: ChartStatisticFiledModel) => {
+  return { type: ActionTypes.SET_APP, payload: { data, appId, field, period } };
+};
+
+export const setAppTypes = (
+  type: string,
+  val: { singleAppData: AppTypesList, curApp: FullAppData },
 ) => {
   return { type, payload: val };
 };
@@ -47,24 +59,17 @@ export const updateChartData =
   async (dispatch: Dispatch) => {
     const dateEnd = new Date();
     const dateStart = chartService.getDateStartByCurrentPeriod(dateEnd, period!);
-    const appReq = app!.id !== 'allApps' ? app!.id : '';
-
+    const appReq = app && app!.id !== 'allApps' ? app!.id : '';
     try {
-      const { data } = await chartService.getTimeSeries(
+      const { data }: { data: number[][] } = await chartService.getTimeSeries(
         period!.id,
         field!.id,
         dateStart.getTime(),
         dateEnd.getTime(),
         appReq,
       );
-      dispatch(
-        setReducer(ActionTypes.SET_APP, {
-          data,
-          periodVal: period!.id,
-          fieldLabel: field!.label,
-          appVal: app!.id,
-        }),
-      );
+
+      dispatch(setChartData(data, app ? app!.id : '', field, period));
     } catch (e) {
       notifyErrorResp(e);
     }
@@ -129,4 +134,19 @@ export const handleApp = (appData: AppListMenuAction) => async (dispatch: Dispat
   } catch (e) {
     notifyErrorResp(e);
   }
+};
+
+
+export const getAppTypes = (appId:string, version: number) => async (dispatch: Dispatch) => {
+  try {
+    const { data } = await AppTypeService.getAppTypes( 1, 100 );
+    const curApp = await appVersion.getAppByVersion( appId, version );
+    dispatch(setAppTypes(ActionTypes.SET_APP_TYPES, {singleAppData: data, curApp: curApp.data}));
+  } catch (e) {
+    notifyErrorResp(e);
+  }
+};
+
+export const updateFields = (selected: string, fields: AppTypeModel | null) => (dispatch: Dispatch) => {
+  dispatch({ type: ActionTypes.UPDATE_FIELDS , payload: { selected, fields } });
 };

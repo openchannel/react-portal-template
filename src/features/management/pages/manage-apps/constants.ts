@@ -48,13 +48,7 @@ export const defaultProps = {
         label: 'Views',
       },
     ],
-    apps: [
-      {
-        id: 'allApps',
-        label: 'All apps',
-        active: true,
-      },
-    ],
+    apps: [],
   },
   count: 0,
   countText: '',

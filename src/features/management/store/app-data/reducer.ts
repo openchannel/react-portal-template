@@ -1,12 +1,17 @@
-import { FullAppData, ChartStatisticFiledModel } from '@openchannel/react-common-components';
+import { get } from 'lodash';
+import { FullAppData, ChartStatisticFiledModel, AppTypeModel, AppTypeFieldModel } from '@openchannel/react-common-components';
 import { ActionTypes } from './action-types';
-import { Action, DataReducer } from './types';
+import { Action, DataReducer, AppType } from './types';
+import { defaultProps } from 'features/management/pages/manage-apps/constants';
 
 const initialState: DataReducer = {
   chart: {
-    labelsY: [],
-    labelsX: [],
-    tabularLabels: [],
+    ...defaultProps.chartData,
+    data: {
+      labelsY: [],
+      labelsX: [],
+      tabularLabels: [],
+    }
   },
   count: 0,
   countText: '',
@@ -18,6 +23,7 @@ const initialState: DataReducer = {
       active: true,
     },
   ],
+  singleAppData: {},
 };
 
 export const appDataReducer = (state = initialState, action: Action): DataReducer => {
@@ -41,14 +47,17 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
     }
 
     case ActionTypes.SET_APP: {
+      const { data, appId, field, period } = action.payload;
+      
       const labelsX: Array<string | number> = [];
       const labelsY: number[] = [];
       const tabularLabels: string[] = [];
 
-      action.payload.data.forEach((item: number[]) => {
+      data.forEach((item) => {
         const date = new Date(item[0]);
         const monthTo = date.toLocaleString('default', { month: 'short' });
-        if (action.payload.periodVal === 'day') {
+
+        if (period.id === 'day') {
           const dayTo = date.toLocaleString('default', { day: 'numeric' });
           const finalStr = monthTo.concat(' ', dayTo.toString());
           labelsX.push(finalStr);
@@ -60,20 +69,21 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
 
         labelsY.push(item[1]);
       });
-      state.apps = state.apps.map((item: ChartStatisticFiledModel) => ({
-        ...item,
-        active: action.payload.appVal === item.id,
-      }));
-
       return {
         ...state,
-        chart: { labelsX, labelsY, tabularLabels },
+        apps: state.apps.map((item) => (appId !== '' ? { ...item, active: appId === item.id }: { ...item } )),
+        chart: {
+          ...state.chart,
+          fields: state.chart.fields.map((f) => ({ ...f, active: field.id === f.id })),
+          periods: state.chart.periods.map((p) => ({ ...p, active: period.id === p.id })),
+          data: { labelsX, labelsY, tabularLabels },
+        },
         count: labelsY.reduce((a: number, b: number) => a + b, 0),
-        countText: `Total ${action.payload.fieldLabel}`,
+        countText: `Total ${action.payload.field.label}`,
       };
     }
-    case ActionTypes.SET_CHILD: {
 
+    case ActionTypes.SET_CHILD: {
       const list = state.list.map((parent) => {
         const exist = action.payload.list.filter((child) => parent.appId === child.appId);
         if (exist) {
@@ -88,6 +98,50 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
         ...state,
         list,
       };
+    }
+    case ActionTypes.SET_APP_TYPES: {
+      const newArrTypes:string[] = [];
+      const { curApp } = action.payload;
+      let newAppFields:AppType | null = null;
+      action.payload.singleAppData.list.forEach((item:AppTypeModel) => {
+        if(item.appTypeId === curApp!.type) {
+          
+          newAppFields = {
+            ...item,
+            formId: item.appTypeId,
+            fields: (item.fields || []).map((field: AppTypeFieldModel) => {
+              const defVal = get(curApp, field.id);
+              return {
+                ...field,
+                defaultValue: defVal ? defVal : field.defaultValue,
+              };
+            })
+          };
+        }
+        newArrTypes.push( item.appTypeId );
+      });
+      
+      return {
+        ...state,
+        apps: [],
+        singleAppData:{
+          appFields: newAppFields,
+          listApps: action.payload.singleAppData.list,
+          selectedType: curApp!.type,
+          curAppStatus: curApp!.parent && curApp!.parent.status && curApp!.parent.status.value === 'suspended' ?curApp!.parent.status.value : curApp!.status.value,
+          appTypes: newArrTypes,
+        }
+      }
+    }
+    case ActionTypes.UPDATE_FIELDS: {
+      return {
+        ...state,
+        singleAppData: {
+          ...state.singleAppData,
+          appFields: action.payload.fields,
+          selectedType: action.payload.selected,
+        }
+      }
     }
     default:
       return state;
