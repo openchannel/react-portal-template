@@ -2,25 +2,28 @@ import { ActionTypes } from './action-types';
 import {
   FullAppData,
   ChartStatisticFiledModel,
-  ChartStatisticDataModel,
   AppTypeModel,
-  AppTypeFieldModel,
   AppFormModel,
   ChartStatisticModel,
+  OcFormValues,
 } from '@openchannel/react-common-components';
 
 export type Action = {
-  type: ActionTypes.SET_CHART | ActionTypes.SET_CHILD | ActionTypes.SET_APP_TYPES | ActionTypes.UPDATE_FIELDS;
+  type: ActionTypes.UPDATE_FIELDS;
   payload: {
-    data: Array<[number]>;
-    periodVal: string;
-    fieldLabel: string;
-    appVal: string;
+    selected:string;
+    fields: AppFormModel | null;
+  };
+} | {
+  type: ActionTypes.SET_APP_TYPES;
+  payload: {
+    curApp: FullAppData;
+    singleAppData: AppTypesList;
+  };
+} | {
+  type: ActionTypes.SET_CHART | ActionTypes.SET_CHILD;
+  payload: {
     list: FullAppData[];
-    curApp?: FullAppData;
-    singleAppData?: any;
-    selected?:string;
-    fields?: AppFormModel | null;
   };
 } | {
   type: ActionTypes.SET_APP;
@@ -29,6 +32,11 @@ export type Action = {
     appId: string;
     field: ChartStatisticFiledModel;
     period: ChartStatisticFiledModel;
+  };
+} | {
+  type: ActionTypes.SET_VERSION;
+  payload: {
+    appVer: number;
   };
 }
 
@@ -48,11 +56,16 @@ export interface AppTypesList {
   pageNumber: number;
 };
 
-export interface CurrentAppField {
-  formId: string,
-  fields: AppTypeFieldModel[] | undefined,
-};
-
 export interface AppType extends AppTypeModel {
   formId:string;
+};
+
+export interface paramToDraftType {
+  values: OcFormValues, 
+  message: string, 
+  appId: string, 
+  version: number, 
+  selectedType: string, 
+  curAppStatus: string, 
+  toSubmit: boolean
 };

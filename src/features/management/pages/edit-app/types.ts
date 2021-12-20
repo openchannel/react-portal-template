@@ -7,7 +7,7 @@ export interface ChartDataType {
   countText: string;
 };
 
-export interface editPage {
+export interface EditPage {
     appId: string,
     version: string,
 };
