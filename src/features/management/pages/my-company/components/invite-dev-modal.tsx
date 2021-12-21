@@ -9,7 +9,7 @@ import {
 
 import { useTypedSelector } from '../../../../common/hooks';
 import { inviteUser, updateUser } from '../../../../common/store/dev-invites';
-import { InviteUserModalProps, UserData } from '../types';
+import { InviteUserModalProps } from '../types';
 
 const InviteDevModal: React.FC<InviteUserModalProps> = React.memo(
   ({ userData, isOpened, closeModal }) => {
@@ -51,8 +51,8 @@ const InviteDevModal: React.FC<InviteUserModalProps> = React.memo(
           }
           return list;
         }, [] as string[]);
-
-        const payload = (userData ? cloneDeep(userData) : {}) as UserData;
+        // eslint-disable-next-line
+        const payload: any = userData ? cloneDeep(userData) : {};
         const formData = {
           name: values.name,
           email: values.email,
@@ -67,7 +67,7 @@ const InviteDevModal: React.FC<InviteUserModalProps> = React.memo(
 
         if (userData) {
           // update account user data or invite data
-          await dispatch(updateUser(payload, userData.inviteId));
+          await dispatch(updateUser(payload, userData.developerInviteId));
         } else {
           // send new invite
           await dispatch(inviteUser(payload));
