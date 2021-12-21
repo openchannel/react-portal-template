@@ -143,6 +143,15 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
         }
       }
     }
+    case ActionTypes.SET_VERSION: {
+      return {
+        ...state,
+        singleAppData: {
+          ...state.singleAppData,
+          newAppVer: action.payload.appVer,
+        }
+      }
+    }
     default:
       return state;
   }

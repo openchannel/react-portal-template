@@ -3,17 +3,17 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { OcNavigationBreadcrumbs, OcSelect } from '@openchannel/react-common-components/dist/ui/common/molecules';
 import { OcForm } from '@openchannel/react-common-components/dist/ui/form/organisms';
-import { OcLabelComponent, notify } from '@openchannel/react-common-components/dist/ui/common/atoms';
+import { OcLabelComponent } from '@openchannel/react-common-components/dist/ui/common/atoms';
 import { ChartStatisticFiledModel, OcFormValues, OcFormFormikHelpers, AppTypeModel } from '@openchannel/react-common-components';
 import { OcChartComponent, ChartOptionsChange } from '@openchannel/react-common-components/dist/ui/portal/organisms';
-import { appVersion, fileService, apps } from '@openchannel/react-common-services';
+import { fileService } from '@openchannel/react-common-services';
 import { OcConfirmationModalComponent } from '@openchannel/react-common-components/dist/ui/common/organisms';
 import { MainTemplate } from 'features/common/templates';
 import { useTypedSelector } from 'features/common/hooks';
 import { notifyErrorResp } from 'features/common/libs/helpers';
-import { updateChartData, getAppTypes, updateFields } from '../../store/app-data';
-import { editPage, ConfirmUserModal } from './types';
-import { defaultProps, initialConfirmAppModal } from './constants';
+import { updateChartData, getAppTypes, updateFields, saveToDraft } from '../../store/app-data';
+import { EditPage, ConfirmUserModal } from './types';
+import { cancelModal, defaultProps, initialConfirmAppModal, submitModal, submitModalPending } from './constants';
 import './styles.scss';
 
 
@@ -30,22 +30,33 @@ const EditApp = (): JSX.Element => {
 
   const history = useHistory();
   const dispatch = useDispatch();
-  const params:editPage = useParams();
+  const params: EditPage = useParams();
   const [modalState, setModalState] = React.useState<ConfirmUserModal>(initialConfirmAppModal);
   const [formValues, setFormValues] = React.useState<OcFormValues>();
   const appToEdit: ChartStatisticFiledModel = ({ id: params.appId,  label: ''});
+
+  const paramToDraft = {
+    values: formValues,
+    message: '',
+    appId: params.appId,
+    version: parseInt(params.version, 10),
+    selectedType,
+    curAppStatus,
+    toSubmit: false,
+  };
+
   React.useEffect(() => {
     const period = defaultProps.chartData.periods.find((v) => v.active);
     const field = defaultProps.chartData.fields.find((v) => v.active);
 
     dispatch(updateChartData(period!, field!, appToEdit));
-    dispatch(getAppTypes(params.appId, parseInt(params.version, 10)));
+    dispatch(getAppTypes(params.appId, paramToDraft.version));
 
     return () => {
       dispatch(updateFields(selectedType, null));
     };
   }, []);
-  
+
   const setSelected = React.useCallback((selected:string) => {
     const form = listApps.find((e:AppTypeModel) => e.appTypeId === selected);
     dispatch(updateFields(selected, form));
@@ -59,79 +70,25 @@ const EditApp = (): JSX.Element => {
     formikHelpers.setSubmitting(false);
     setFormValues(values);
     if(curAppStatus === 'pending') {
-      setModalState({
-        isOpened: true,
-        type: 'primary',
-        modalTitle: 'Submit app',
-        modalText: 'Submit this app to the marketplace now?',
-        confirmButtonText: 'Yes, submit it',
-        rejectButtonHide: true,
-        submitButton: true,
-        toDraft: false,
-      });
+      setModalState(submitModalPending);
     } else {
-      setModalState({
-        isOpened: true,
-        type: 'primary',
-        modalTitle: 'Submit app',
-        modalText: 'Submit this app to the marketplace now?',
-        confirmButtonText: 'Yes, submit it',
-        rejectButtonHide: false,
-        submitButton: true,
-        rejectButtonText: 'Save as draft',
-        toDraft: true,
-      });
+      setModalState(submitModal);
     }
   };
 
-  const saveToDraft = React.useCallback( async (values:OcFormValues, message:string) => {
-    const newArrTypes:OcFormValues = {};
-    const customData:OcFormValues = {};
-    
-    for (const prop in values) {
-      newArrTypes['name'] = values.name;
-      if(prop.includes('customData.')) {
-        const toReplace = prop.replace('customData.','');
-        customData[toReplace] = values[prop];
-      }
-    }
-    
-    newArrTypes.approvalRequired = true;
-    newArrTypes.customData = customData;
-    newArrTypes.type = selectedType;
-
-    try {
-      const newAppV  = await appVersion.updateAppByVersion(params.appId, parseInt(params.version, 10), {body:newArrTypes});
-      notify.success(message);
-      return newAppV.data.version;
-    } catch(e) {
-      notifyErrorResp(e);
-    }
-  }, [params, selectedType]);
-
-  const handleEditFormSave = async (values:OcFormValues) => {
+  const handleEditFormSave = (values:OcFormValues) => {
     let statusMsg = '';
     if (curAppStatus === 'approved') {
       statusMsg = 'New app version created and saved as draft';
     } else {
       statusMsg = 'App has been saved as draft';
     }
-    saveToDraft(values, statusMsg);
+    dispatch(saveToDraft({...paramToDraft, values: {...values}, message: statusMsg}));
     history.goBack();
   };
 
   const handleEditFormCancel = () => {
-    setModalState({
-      isOpened: true,
-      type: 'primary',
-      modalTitle: 'Skip unsaved data',
-      modalText: 'Unsaved data detected. Want to exit?',
-      confirmButtonText: 'Agree',
-      rejectButtonText:"Cancel",
-      rejectButtonHide: false,
-      submitButton: false,
-      toDraft: false,
-    });
+    setModalState(cancelModal);
   };
 
   const closeModal = () => {
@@ -142,13 +99,13 @@ const EditApp = (): JSX.Element => {
       } else {
         statusMsg = 'App has been saved as draft';
       }
-      saveToDraft(formValues, statusMsg);
+      dispatch(saveToDraft({...paramToDraft, values: formValues, message: statusMsg}));
       history.goBack();
     }
     setModalState(initialConfirmAppModal);
   };
 
-  const handleSubmitModal = React.useCallback( async () => {
+  const handleSubmitModal = () => {
     if(modalState.submitButton && formValues) {
       let statusMsg = '';
       if (curAppStatus === 'approved') {
@@ -156,19 +113,15 @@ const EditApp = (): JSX.Element => {
       } else {
         statusMsg = 'App has been submitted for approval';
       }
-      saveToDraft(formValues, statusMsg)
-      .then((res) => {
-        if(curAppStatus !== 'pending') {
-          apps.publishAppByVersion(params.appId, {
-            version: res,
-            autoApprove: false,
-          }); 
-        }
-      });
+      try { 
+        dispatch(saveToDraft({...paramToDraft, values: formValues, toSubmit: true, message: statusMsg}));
+      } catch (e) {
+        notifyErrorResp(e);
+      }
     }
     setModalState(initialConfirmAppModal);
     history.goBack();
-  },[modalState, formValues, params]);
+  };
 
   return (
     <MainTemplate>

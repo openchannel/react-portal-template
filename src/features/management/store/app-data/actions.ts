@@ -1,12 +1,12 @@
 import { Dispatch } from 'redux';
-import { FullAppData, ChartStatisticFiledModel, AppTypeModel } from '@openchannel/react-common-components';
+import { FullAppData, ChartStatisticFiledModel, AppTypeModel, OcFormValues } from '@openchannel/react-common-components';
 import { notify } from '@openchannel/react-common-components/dist/ui/common/atoms';
 import { chartService, appVersion, apps, AppTypeService } from '@openchannel/react-common-services';
 import { appsConfig, query } from './constants';
 import { ActionTypes } from './action-types';
 import { notifyErrorResp } from 'features/common/libs/helpers';
 import { AppListMenuAction } from '@openchannel/react-common-components/dist/ui/portal/models';
-import { AppTypesList } from './types';
+import { AppTypesList, paramToDraftType } from './types';
 
 
 const sortOptionsQueryPattern = {
@@ -149,4 +149,37 @@ export const getAppTypes = (appId:string, version: number) => async (dispatch: D
 
 export const updateFields = (selected: string, fields: AppTypeModel | null) => (dispatch: Dispatch) => {
   dispatch({ type: ActionTypes.UPDATE_FIELDS , payload: { selected, fields } });
+};
+
+export const saveToDraft = (paramToDraft: paramToDraftType) => async (dispatch: Dispatch) => {
+  const { values, message, appId, version, selectedType, curAppStatus, toSubmit} = paramToDraft;
+  const newArrTypes:OcFormValues = {};
+  const customData:OcFormValues = {};
+
+  for (const prop in values) {
+    newArrTypes['name'] = values.name;
+    if(prop.includes('customData.')) {
+      const toReplace = prop.replace('customData.','');
+      customData[toReplace] = values[prop];
+    }
+  }
+
+  newArrTypes.approvalRequired = true;
+  newArrTypes.customData = customData;
+  newArrTypes.type = selectedType;
+
+  try {
+    const { data } = await appVersion.updateAppByVersion(appId, version, {body:newArrTypes});
+
+    if(curAppStatus !== 'pending' && data.version && toSubmit) {
+      apps.publishAppByVersion(appId, {
+        version: data.version,
+        autoApprove: false,
+      }); 
+    }
+    dispatch({ type: ActionTypes.SET_VERSION , payload: { appVer:  data.version} });
+    notify.success(message);
+  } catch(e) {
+    notifyErrorResp(e);
+  }
 };
