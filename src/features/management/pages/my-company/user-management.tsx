@@ -3,11 +3,7 @@ import { useDispatch } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { OcMenuUserGrid } from '@openchannel/react-common-components/dist/ui/management/organisms';
 import { useTypedSelector } from '../../../common/hooks';
-import {
-  storage,
-  UserAccountGridModel,
-  UserGridActionModel,
-} from '@openchannel/react-common-services';
+import { storage, Page } from '@openchannel/react-common-services';
 import { OcConfirmationModalComponent } from '@openchannel/react-common-components/dist/ui/common/organisms';
 import {
   getAllDevelopers,
@@ -18,7 +14,7 @@ import {
 } from '../../../common/store/dev-invites';
 
 import { getUserByAction } from './utils';
-import { ConfirmDeleteUserModal, UserManagementProps } from './types';
+import { DeveloperAccountGridModel, UserManagementProps } from './types';
 import InviteDevModal from './components/invite-dev-modal';
 import { initialConfirmDeleteUserModal } from './constants';
 
@@ -28,11 +24,12 @@ const UserManagement: React.FC<UserManagementProps> = ({
   closeInviteModal,
 }) => {
   const dispatch = useDispatch();
-  const [state, setState] = React.useState<ConfirmDeleteUserModal>(initialConfirmDeleteUserModal);
+  //eslint-disable-next-line
+  const [state, setState] = React.useState<any>(initialConfirmDeleteUserModal);
 
   const { userProperties, sortQuery } = useTypedSelector(({ userInvites }) => userInvites);
   const { data } = userProperties;
-  const { pageNumber, pages, list } = data;
+  const { pageNumber, pages, list } = data as unknown as Page<DeveloperAccountGridModel>;
 
   const catchSortChanges = (sortBy: string) => {
     dispatch(sortMyCompany(sortBy));
@@ -49,8 +46,8 @@ const UserManagement: React.FC<UserManagementProps> = ({
       dispatch(clearUserProperties());
     };
   }, []);
-
-  const onMenuClick = (userAction: UserGridActionModel) => {
+  // eslint-disable-next-line
+  const onMenuClick = (userAction: any) => {
     const user = getUserByAction(userAction, list);
     if (user) {
       switch (userAction.action) {
@@ -67,12 +64,14 @@ const UserManagement: React.FC<UserManagementProps> = ({
       console.error("Can't find user from mail array by action");
     }
   };
-
+  //edit must be v2/invites/developers/byId/:id
   const closeConfirmModal = () => {
     setState(initialConfirmDeleteUserModal);
   };
+  // eslint-disable-next-line
+  const openConfirmModal = (user: any) => {
+    console.log('user in MODAL', user);
 
-  const openConfirmModal = (user: UserAccountGridModel) => {
     if (user?.inviteStatus === 'INVITED') {
       setState({
         isOpened: true,
@@ -80,7 +79,7 @@ const UserManagement: React.FC<UserManagementProps> = ({
         modalTitle: 'Delete invite',
         modalText: 'Are you sure you want to delete this invite?',
         confirmButtonText: 'Yes, delete invite',
-        userId: user.inviteId,
+        userId: user.developerInviteId,
         user: user,
       });
     } else if (user?.inviteStatus === 'ACTIVE') {
@@ -111,12 +110,12 @@ const UserManagement: React.FC<UserManagementProps> = ({
 
   const deleteUserInModal = async () => {
     if (state.type === 'invite') {
-      await dispatch(deleteUserInvite(state.user));
+      await dispatch(deleteUserInvite(state.user, state.userId!));
     }
 
     if (state.type === 'user') {
       if (state?.user?.userAccountId !== storage.getUserDetails()?.individualId) {
-        await dispatch(deleteUserAccount(state.user));
+        await dispatch(deleteUserAccount(state.user, state.userId!));
       }
     }
 
@@ -153,6 +152,7 @@ const UserManagement: React.FC<UserManagementProps> = ({
           onMenuClick={onMenuClick}
           onSort={catchSortChanges}
           properties={userProperties}
+          mode="developer"
         />
       </InfiniteScroll>
     </>

@@ -1,10 +1,6 @@
-import {
-  AccessLevel,
-  PermissionType,
-  UserAccountGridModel,
-} from '@openchannel/react-common-services';
+import { AccessLevel, PermissionType } from '@openchannel/react-common-services';
 
-import { ConfirmDeleteUserModal, Page } from './types';
+import { ConfirmDeleteUserModal, DeveloperAccountGridModel, Page } from './types';
 
 export const myCompanyRoutes = {
   userManagement: '/my-company/user-management',
@@ -42,5 +38,5 @@ export const initialConfirmDeleteUserModal: ConfirmDeleteUserModal = {
   confirmButtonText: '',
   rejectButtonText: '',
   userId: '',
-  user: {} as UserAccountGridModel,
+  user: {} as DeveloperAccountGridModel,
 };

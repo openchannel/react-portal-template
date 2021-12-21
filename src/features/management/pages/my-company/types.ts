@@ -1,7 +1,19 @@
 import { Permission, UserAccountGridModel } from '@openchannel/react-common-services';
-import { UserAccountInviteStatusTypeModel } from '@openchannel/react-common-services/dist/model/api/user.model';
+import {
+  UserAccount,
+  UserAccountInviteStatusTypeModel,
+} from '@openchannel/react-common-services/dist/model/api/user.model';
 
-export interface UserData extends UserAccountGridModel {
+export interface DeveloperAccountGridModel extends UserAccount {
+  inviteStatus?: UserAccountInviteStatusTypeModel;
+  inviteId?: string;
+  inviteToken?: string;
+  developerAccountId: string;
+  developerId: string;
+  developerInviteId: string;
+}
+
+export interface UserData extends DeveloperAccountGridModel {
   [index: string]:
     | string
     | string[]
@@ -11,10 +23,10 @@ export interface UserData extends UserAccountGridModel {
     | undefined;
 }
 
-export type InviteModalState = { isOpened: boolean; user: UserAccountGridModel | null };
+export type InviteModalState = { isOpened: boolean; user: DeveloperAccountGridModel | null };
 
 export interface InviteUserModalProps {
-  userData: UserAccountGridModel | null;
+  userData: DeveloperAccountGridModel | null;
   isOpened: boolean;
   closeModal(): void;
 }
@@ -27,7 +39,7 @@ export interface Page {
 
 export interface UserManagementProps {
   inviteModal: InviteModalState;
-  openInviteModalWithUserData(user: UserAccountGridModel): void;
+  openInviteModalWithUserData(user: DeveloperAccountGridModel): void;
   closeInviteModal(): void;
 }
 
@@ -39,5 +51,6 @@ export interface ConfirmDeleteUserModal {
   confirmButtonText: string;
   rejectButtonText?: string;
   userId: string | undefined;
-  user: UserAccountGridModel;
+  devInviteId?: string | undefined;
+  user: DeveloperAccountGridModel;
 }

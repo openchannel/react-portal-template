@@ -109,7 +109,7 @@ export const sortMyCompany = (sortBy: string) => async (dispatch: Dispatch, getS
   const nextSortQueryStr = JSON.stringify({ [nextSortQuery.sortBy]: nextSortQuery.sortOrder });
 
   const fetchDataSort = await Promise.allSettled([
-    userInvites.getUserInvites(1, 10, nextSortQueryStr),
+    userInvites.getDeveloperInvites(1, 10, nextSortQueryStr),
     developerAccount.getDeveloperAccounts(1, 10, nextSortQueryStr),
     developerRoleService.getDeveloperRoles(1, 100),
   ]);
@@ -200,22 +200,24 @@ const deleteUserFromResultArray =
     dispatch(saveUserProperties(newUserProperties));
   };
 
-export const deleteUserInvite = (dev: any) => async (dispatch: Dispatch, getState: GetState) => {
-  try {
-    await userInvites.deleteDeveloperInvite(dev.developerInviteId);
-    notify.success('Invite has been deleted');
-    deleteUserFromResultArray(dev)(dispatch, getState);
-  } catch {
-    // do nothing
-  }
-};
+export const deleteUserInvite =
+  (dev: any, devId: string) => async (dispatch: Dispatch, getState: GetState) => {
+    try {
+      await userInvites.deleteDeveloperInvite(devId);
+      notify.success('Invite has been deleted');
+      deleteUserFromResultArray(dev)(dispatch, getState);
+    } catch {
+      // do nothing
+    }
+  };
 
-export const deleteUserAccount = (dev: any) => async (dispatch: Dispatch, getState: GetState) => {
-  try {
-    await developerAccount.deleteDevAccount(dev.developerId);
-    notify.success('User has been deleted from your organization');
-    deleteUserFromResultArray(dev)(dispatch, getState);
-  } catch {
-    // do nothing
-  }
-};
+export const deleteUserAccount =
+  (dev: any, devId: string) => async (dispatch: Dispatch, getState: GetState) => {
+    try {
+      await developerAccount.deleteDevAccount(devId);
+      notify.success('User has been deleted from your organization');
+      deleteUserFromResultArray(dev)(dispatch, getState);
+    } catch {
+      // do nothing
+    }
+  };
