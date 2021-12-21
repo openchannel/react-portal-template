@@ -70,8 +70,6 @@ const UserManagement: React.FC<UserManagementProps> = ({
   };
   // eslint-disable-next-line
   const openConfirmModal = (user: any) => {
-    console.log('user in MODAL', user);
-
     if (user?.inviteStatus === 'INVITED') {
       setState({
         isOpened: true,
