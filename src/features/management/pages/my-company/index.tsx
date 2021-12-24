@@ -22,9 +22,12 @@ const MyCompany = (): JSX.Element => {
 
   const filterPagesByUserType = page.filter((page) => storage.hasAnyPermission(page.permissions));
 
-  const onClickPass = React.useCallback((e) => {
-    history.push(e.target.dataset.link);
-  }, [history.push]);
+  const onClickPass = React.useCallback(
+    (e) => {
+      history.push(e.target.dataset.link);
+    },
+    [history.push],
+  );
 
   const openInviteModal = React.useCallback(() => {
     updateInviteModal({ isOpened: true, user: null });

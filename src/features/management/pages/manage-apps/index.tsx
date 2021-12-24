@@ -23,7 +23,7 @@ const ManageApp = (): JSX.Element => {
   const onClickPass = React.useCallback(() => {
     history.push('/manage-apps/create');
   }, []);
-  
+
   const [chartState, setChartState] = React.useState<ChartDataType>(defaultProps);
   const [state, setState] = React.useState<ConfirmUserModal>(initialConfirmAppModal);
   const [modalAppData, setModalAppData] = React.useState<AppListMenuAction>(initialModalData);
@@ -72,7 +72,7 @@ const ManageApp = (): JSX.Element => {
     [appData, chartState],
   );
 
-  const handleManageApps = (appsData:AppListMenuAction) => {
+  const handleManageApps = (appsData: AppListMenuAction) => {
     setModalAppData(appsData);
     switch (appsData.action) {
       case 'DELETE': {
@@ -121,37 +121,37 @@ const ManageApp = (): JSX.Element => {
         />
       </div>
       <div className="container manage-app">
-          <div className="container my-3 px-0">
-            <OcChartComponent
-              chartData={chartState.chartData}
-              count={chartState.count}
-              countText={chartState.countText}
-              changeChartOptions={changeChartOptions}
-              downloadUrl={'/assets/img/cloud-download.svg'}
-              activeDataType="graph"
-            />
-          </div>
-          <div className="manage-app-table pb-2">
-            <OcAppTable
-              descendingSortIcon={'assets/img/dropdown.svg'}
-              ascendingSortIcon={'assets/img/dropdown.svg'}
-              defaultAppIcon={'assets/img/default-app-icon.svg'}
-              properties={allAppsData}
-              noAppMessage={'No apps in your list'}
-              onMenuClick={handleManageApps}
-            />
-          </div>
-          <OcConfirmationModalComponent
-            isOpened={state.isOpened}
-            onSubmit={handleSubmitModal}
-            onClose={closeModal}
-            onCancel={closeModal}
-            modalTitle={state.modalTitle}
-            modalText={state.modalText}
-            confirmButtonText={state.confirmButtonText}
-            confirmButtonType={state.type}
-            rejectButtonText={state.rejectButtonText}
+        <div className="container my-3 px-0">
+          <OcChartComponent
+            chartData={chartState.chartData}
+            count={chartState.count}
+            countText={chartState.countText}
+            changeChartOptions={changeChartOptions}
+            downloadUrl={'/assets/img/cloud-download.svg'}
+            activeDataType="graph"
           />
+        </div>
+        <div className="manage-app-table pb-2">
+          <OcAppTable
+            descendingSortIcon={'assets/img/dropdown.svg'}
+            ascendingSortIcon={'assets/img/dropdown.svg'}
+            defaultAppIcon={'assets/img/default-app-icon.svg'}
+            properties={allAppsData}
+            noAppMessage={'No apps in your list'}
+            onMenuClick={handleManageApps}
+          />
+        </div>
+        <OcConfirmationModalComponent
+          isOpened={state.isOpened}
+          onSubmit={handleSubmitModal}
+          onClose={closeModal}
+          onCancel={closeModal}
+          modalTitle={state.modalTitle}
+          modalText={state.modalText}
+          confirmButtonText={state.confirmButtonText}
+          confirmButtonType={state.type}
+          rejectButtonText={state.rejectButtonText}
+        />
       </div>
     </MainTemplate>
   );

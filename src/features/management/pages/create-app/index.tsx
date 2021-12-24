@@ -4,19 +4,19 @@ import { OcNavigationBreadcrumbs } from '@openchannel/react-common-components/di
 import './styles.scss';
 
 const CreateApp = (): JSX.Element => {
-    const history = useHistory();
+  const history = useHistory();
 
-    return (
-      <MainTemplate>
-        <div className="bg-container manage-app-header">
-            <OcNavigationBreadcrumbs
-            pageTitle="Create app"
-            navigateText="Back"
-            navigateClick={history.goBack}
-            />
-        </div>
-      </MainTemplate>
-    );
+  return (
+    <MainTemplate>
+      <div className="bg-container manage-app-header">
+        <OcNavigationBreadcrumbs
+          pageTitle="Create app"
+          navigateText="Back"
+          navigateClick={history.goBack}
+        />
+      </div>
+    </MainTemplate>
+  );
 };
 
 export default CreateApp;
