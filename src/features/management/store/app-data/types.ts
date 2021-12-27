@@ -60,7 +60,7 @@ export interface AppType extends AppTypeModel {
   formId:string;
 };
 
-export interface paramToDraftType {
+export interface ParamToDraftType {
   values: OcFormValues, 
   message: string, 
   appId: string, 

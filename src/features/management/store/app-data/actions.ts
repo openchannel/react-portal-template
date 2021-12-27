@@ -6,7 +6,7 @@ import { appsConfig, query } from './constants';
 import { ActionTypes } from './action-types';
 import { notifyErrorResp } from 'features/common/libs/helpers';
 import { AppListMenuAction } from '@openchannel/react-common-components/dist/ui/portal/models';
-import { AppTypesList, paramToDraftType } from './types';
+import { AppTypesList, ParamToDraftType } from './types';
 
 
 const sortOptionsQueryPattern = {
@@ -151,7 +151,7 @@ export const updateFields = (selected: string, fields: AppTypeModel | null) => (
   dispatch({ type: ActionTypes.UPDATE_FIELDS , payload: { selected, fields } });
 };
 
-export const saveToDraft = (paramToDraft: paramToDraftType) => async (dispatch: Dispatch) => {
+export const saveToDraft = (paramToDraft: ParamToDraftType) => async (dispatch: Dispatch) => {
   const { values, message, appId, version, selectedType, curAppStatus, toSubmit} = paramToDraft;
   const newArrTypes:OcFormValues = {};
   const customData:OcFormValues = {};
@@ -172,7 +172,7 @@ export const saveToDraft = (paramToDraft: paramToDraftType) => async (dispatch: 
     const { data } = await appVersion.updateAppByVersion(appId, version, {body:newArrTypes});
 
     if(curAppStatus !== 'pending' && data.version && toSubmit) {
-      apps.publishAppByVersion(appId, {
+      await apps.publishAppByVersion(appId, {
         version: data.version,
         autoApprove: false,
       }); 

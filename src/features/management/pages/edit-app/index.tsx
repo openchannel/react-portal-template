@@ -38,6 +38,9 @@ const mappedFileService = {
   fileDetailsRequest: fileService.downloadFileDetails,
 };
 
+const params: EditPage = useParams();
+const appToEdit: ChartStatisticFiledModel = { id: params.appId, label: '' };
+
 const EditApp = (): JSX.Element => {
   const {
     chart,
@@ -48,10 +51,8 @@ const EditApp = (): JSX.Element => {
 
   const history = useHistory();
   const dispatch = useDispatch();
-  const params: EditPage = useParams();
   const [modalState, setModalState] = React.useState<ConfirmUserModal>(initialConfirmAppModal);
   const [formValues, setFormValues] = React.useState<OcFormValues>();
-  const appToEdit: ChartStatisticFiledModel = { id: params.appId, label: '' };
 
   const paramToDraft = {
     values: formValues,
@@ -145,7 +146,6 @@ const EditApp = (): JSX.Element => {
         notifyErrorResp(e);
       }
     }
-    setModalState(initialConfirmAppModal);
     history.goBack();
   };
 
