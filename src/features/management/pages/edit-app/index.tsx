@@ -90,25 +90,25 @@ const EditApp = (): JSX.Element => {
     [appToEdit],
   );
 
-  const handleEditFormSubmit = (values: OcFormValues, formikHelpers: OcFormFormikHelpers) => {
-    formikHelpers.setSubmitting(false);
-    setFormValues(values);
-    if (curAppStatus === 'pending') {
-      setModalState(submitModalPending);
-    } else {
-      setModalState(submitModal);
+  const handleEditFormSubmit = (values: OcFormValues, formikHelpers: OcFormFormikHelpers, action:string) => {
+    if(action === 'submit') {
+      formikHelpers.setSubmitting(false);
+      setFormValues(values);
+      if (curAppStatus === 'pending') {
+        setModalState(submitModalPending);
+      } else {
+        setModalState(submitModal);
+      }
+    } else if(action === 'save') {
+      let statusMsg = '';
+      if (curAppStatus === 'approved') {
+        statusMsg = 'New app version created and saved as draft';
+      } else {
+        statusMsg = 'App has been saved as draft';
+      }
+      dispatch(saveToDraft({ ...paramToDraft, values: { ...values }, message: statusMsg }));
+      history.goBack();
     }
-  };
-
-  const handleEditFormSave = (values: OcFormValues) => {
-    let statusMsg = '';
-    if (curAppStatus === 'approved') {
-      statusMsg = 'New app version created and saved as draft';
-    } else {
-      statusMsg = 'App has been saved as draft';
-    }
-    dispatch(saveToDraft({ ...paramToDraft, values: { ...values }, message: statusMsg }));
-    history.goBack();
   };
 
   const handleEditFormCancel = () => {
@@ -192,7 +192,6 @@ const EditApp = (): JSX.Element => {
             submitButtonText="Submit"
             onCancel={handleEditFormCancel}
             buttonPosition="between"
-            onSave={handleEditFormSave}
             showSaveBtn={curAppStatus === 'pending' ? false : true}
             showSubmitBtn={curAppStatus === 'suspended' ? false : true}
           />
