@@ -12,6 +12,7 @@ import {
   OcFormValues,
   OcFormFormikHelpers,
   AppTypeModel,
+  AppTypeFieldModel,
 } from '@openchannel/react-common-components';
 import {
   OcChartComponent,
@@ -78,6 +79,9 @@ const EditApp = (): JSX.Element => {
   const setSelected = React.useCallback(
     (selected: string) => {
       const form = listApps.find((e: AppTypeModel) => e.appTypeId === selected);
+      const savedName = appFields.fields.find((e: AppTypeFieldModel) => e.id === 'name');
+      form.fields.find((e: AppTypeFieldModel) => e.id === 'name').defaultValue = savedName.defaultValue;
+      
       dispatch(updateFields(selected, form));
     },
     [listApps],
@@ -147,7 +151,7 @@ const EditApp = (): JSX.Element => {
     }
     history.goBack();
   };
-
+  
   return (
     <MainTemplate>
       <div className="bg-container edit-app-header">
