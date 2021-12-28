@@ -63,7 +63,7 @@ const getUserAccountFormType = async (userInviteData: InviteUserModel) => {
 
 export const getUserInviteInfoByToken = (token: string) => async (dispatch: TypedDispatch) => {
   try {
-    const { data } = await userInvites.getUserInviteInfoByToken(token);
+    const { data } = await userInvites.getDeveloperInviteInfoByToken(token);
 
     dispatch(setUserInviteData(data));
 
