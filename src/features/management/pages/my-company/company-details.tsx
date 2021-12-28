@@ -11,10 +11,10 @@ import {
 
 import { useTypedSelector } from 'features/common/hooks';
 import {
-  clearUserCompanyForm,
-  getUserCompanyForm,
-  saveUserCompany,
-} from 'features/common/store/user-types/actions';
+  clearDevCompanyForm,
+  getDevCompanyForm,
+  saveDevCompany,
+} from 'features/common/store/dev-types/actions';
 
 const mappedFileService = {
   fileUploadRequest: fileService.uploadToOpenChannel,
@@ -23,13 +23,13 @@ const mappedFileService = {
 
 const CompanyDetails: React.FC = () => {
   const dispatch = useDispatch();
-  const { companyForm } = useTypedSelector(({ userTypes }) => userTypes);
+  const { companyForm } = useTypedSelector(({ userDevTypes }) => userDevTypes);
 
   React.useEffect(() => {
-    dispatch(getUserCompanyForm());
+    dispatch(getDevCompanyForm());
 
     return () => {
-      dispatch(clearUserCompanyForm());
+      dispatch(clearDevCompanyForm());
     };
   }, []);
 
@@ -38,7 +38,7 @@ const CompanyDetails: React.FC = () => {
     { setErrors, setSubmitting }: OcFormFormikHelpers,
   ) => {
     try {
-      await dispatch(saveUserCompany(value));
+      await dispatch(saveDevCompany(value));
       notify.success('Your company details has been updated');
       // eslint-disable-next-line
     } catch (e: any) {
@@ -60,6 +60,8 @@ const CompanyDetails: React.FC = () => {
       formJsonData={companyForm as AppFormModel}
       onSubmit={handleSubmit}
       service={apps}
+      buttonPosition="between"
+      submitButtonText="Save"
     />
   );
 };
