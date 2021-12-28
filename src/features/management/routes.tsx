@@ -11,7 +11,7 @@ export const managementRoutes = [
     path: '/my-profile',
     exact: false,
     private: true,
-    Component: ProfilePage, 
+    Component: ProfilePage,
   },
   {
     path: '/my-company',

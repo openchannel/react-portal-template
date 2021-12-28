@@ -32,9 +32,12 @@ const Profile = (): JSX.Element => {
 
   const { configs, account, isLoading } = useTypedSelector(({ userDevTypes }) => userDevTypes);
 
-  const onClickPass = React.useCallback((e) => {
-    history.push(e.target.dataset.link);
-  }, [history.push]);
+  const onClickPass = React.useCallback(
+    (e) => {
+      history.push(e.target.dataset.link);
+    },
+    [history.push],
+  );
 
   React.useEffect(() => {
     dispatch(loadDevProfileForm(formConfigsWithoutTypeData, false, true));
@@ -115,7 +118,9 @@ const Profile = (): JSX.Element => {
             <ul className="list-unstyled">
               <li>
                 <span
-                  className={`font-m ${pathname === '/my-profile/profile-details' ? 'active-link' : ''}`}
+                  className={`font-m ${
+                    pathname === '/my-profile/profile-details' ? 'active-link' : ''
+                  }`}
                   role="button"
                   tabIndex={0}
                   data-link="profile-details"
@@ -127,7 +132,9 @@ const Profile = (): JSX.Element => {
               </li>
               <li>
                 <span
-                  className={`font-m ${pathname === '/my-profile/changePassword' ? 'active-link' : ''}`}
+                  className={`font-m ${
+                    pathname === '/my-profile/changePassword' ? 'active-link' : ''
+                  }`}
                   role="button"
                   tabIndex={0}
                   data-link="changePassword"
