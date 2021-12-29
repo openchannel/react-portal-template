@@ -111,6 +111,14 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
             formId: item.appTypeId,
             fields: (item.fields || []).map((field: AppTypeFieldModel) => {
               const defVal = get(curApp, field.id);
+              if(field.type === 'dynamicFieldArray' && field.fields && field.fields.length > 0) {
+                field.fields.forEach((item) => {
+                  if(defVal[0][item.id]) {
+                    item.defaultValue = defVal[0][item.id];
+                  }
+                });
+              }
+                                 
               return {
                 ...field,
                 defaultValue: defVal ? defVal : field.defaultValue,
