@@ -103,21 +103,19 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
       const newArrTypes:string[] = [];
       const { curApp } = action.payload;
       let newAppFields:AppType | null = null;
+
       action.payload.singleAppData.list.forEach((item:AppTypeModel) => {
-        if(item.appTypeId === curApp!.type) {
-          
+        if (item.appTypeId === curApp!.type) {  
+
           newAppFields = {
             ...item,
             formId: item.appTypeId,
-            fields: (item.fields || []).map((field: AppTypeFieldModel) => {
-              const defVal = get(curApp, field.id);
-              return {
-                ...field,
-                defaultValue: defVal ? defVal : field.defaultValue,
-              };
-            })
+            fields: (item.fields || []).map((field: AppTypeFieldModel) => ({
+              ...field,
+              defaultValue: get(curApp, field.id) || '',
+            })),
           };
-        }
+        };
         newArrTypes.push( item.appTypeId );
       });
       
@@ -128,7 +126,7 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
           appFields: newAppFields,
           listApps: action.payload.singleAppData.list,
           selectedType: curApp!.type,
-          curAppStatus: curApp!.parent && curApp!.parent.status && curApp!.parent.status.value === 'suspended' ?curApp!.parent.status.value : curApp!.status.value,
+          curAppStatus: curApp!.parent?.status.value === 'suspended' ? curApp.parent.status.value : curApp.status.value,
           appTypes: newArrTypes,
         }
       }
