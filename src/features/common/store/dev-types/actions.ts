@@ -9,7 +9,6 @@ import {
   UserAccount,
   developerAccount,
   developerAccountTypes,
-  users,
   storage,
   developerService,
   DeveloperTypeService,
@@ -198,10 +197,10 @@ export const getDevCompanyForm = () => async (dispatch: Dispatch) => {
 export const clearDevCompanyForm = () => (dispatch: Dispatch) => dispatch(resetDevCompanyForm());
 
 // eslint-disable-next-line
-export const saveDevCompany = (value: any) => async (dispatch: Dispatch) => {
+export const saveDevCompany = async (value: any) => {
   try {
     const valueForSaving = TypeMapperUtils.buildDataForSaving(value);
-    await users.updateUserCompany(valueForSaving);
+    await developerService.updateDeveloper(valueForSaving);
   } catch (error) {
     throw normalizeError(error);
   }
