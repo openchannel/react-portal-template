@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import { FullAppData, ChartStatisticFiledModel, AppTypeModel, AppTypeFieldModel } from '@openchannel/react-common-components';
 import { ActionTypes } from './action-types';
-import { Action, DataReducer, AppType } from './types';
+import { Action, DataReducer, AppType, AppTypeSelecton } from './types';
 import { defaultProps } from 'features/management/pages/manage-apps/constants';
 
 const initialState: DataReducer = {
@@ -100,13 +100,16 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
       };
     }
     case ActionTypes.SET_APP_TYPES: {
-      const newArrTypes:string[] = [];
+      const newArrTypes:AppTypeSelecton[] = [];
       const { curApp } = action.payload;
       let newAppFields:AppType | null = null;
+      let typeLabel:string | AppTypeSelecton = 'App Not Found';
 
       action.payload.singleAppData.list.forEach((item:AppTypeModel) => {
-        if (item.appTypeId === curApp!.type) {  
+        
 
+        if (item.appTypeId === curApp!.type) {  
+          typeLabel = { id: item.appTypeId, label: item.label || ''}
           newAppFields = {
             ...item,
             formId: item.appTypeId,
@@ -116,7 +119,7 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
             })),
           };
         };
-        newArrTypes.push( item.appTypeId );
+        newArrTypes.push({ id: item.appTypeId, label: item.label || ''});
       });
       
       return {
@@ -125,19 +128,20 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
         singleAppData:{
           appFields: newAppFields,
           listApps: action.payload.singleAppData.list,
-          selectedType: curApp!.type,
+          selectedType: typeLabel,
           curAppStatus: curApp!.parent?.status.value === 'suspended' ? curApp.parent.status.value : curApp.status.value,
           appTypes: newArrTypes,
         }
       }
     }
     case ActionTypes.UPDATE_FIELDS: {
+      const typeLabel = state.singleAppData.listApps.find((v:AppTypeModel) => v.appTypeId === action.payload.selected);
       return {
         ...state,
         singleAppData: {
           ...state.singleAppData,
           appFields: action.payload.fields,
-          selectedType: action.payload.selected,
+          selectedType: typeLabel ? { id: typeLabel.appTypeId, label: typeLabel.label} : '',
         }
       }
     }

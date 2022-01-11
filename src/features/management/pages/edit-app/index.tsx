@@ -46,7 +46,7 @@ const EditApp = (): JSX.Element => {
     countText,
     singleAppData: { listApps, selectedType, appTypes, appFields, curAppStatus },
   } = useTypedSelector(({ appData }) => appData);
-
+  
   const history = useHistory();
   const dispatch = useDispatch();
   const params: EditPage = useParams();
@@ -59,7 +59,7 @@ const EditApp = (): JSX.Element => {
     message: '',
     appId: params.appId,
     version: parseInt(params.version, 10),
-    selectedType,
+    selectedType: selectedType?.id,
     curAppStatus,
     toSubmit: false,
   };
@@ -77,12 +77,12 @@ const EditApp = (): JSX.Element => {
   }, []);
 
   const setSelected = React.useCallback(
-    (selected: string) => {
-      const form = listApps.find((e: AppTypeModel) => e.appTypeId === selected);
+    (selected: {label:string}) => {
+      const form = listApps.find((e: AppTypeModel) => e.appTypeId === selected.label);
       const savedName = appFields.fields.find((e: AppTypeFieldModel) => e.id === 'name');
       form.fields.find((e: AppTypeFieldModel) => e.id === 'name').defaultValue = savedName.defaultValue;
       
-      dispatch(updateFields(selected, form));
+      dispatch(updateFields(selected.label, form));
     },
     [listApps],
   );
@@ -183,7 +183,8 @@ const EditApp = (): JSX.Element => {
               <OcSelect
                 onSelectionChange={setSelected}
                 selectValArr={appTypes}
-                value={selectedType}
+                value={selectedType?.label}
+                labelField='label'
               />
             </div>
           </div>

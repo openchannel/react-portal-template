@@ -69,3 +69,8 @@ export interface ParamToDraftType {
   curAppStatus: string, 
   toSubmit: boolean
 };
+
+export interface AppTypeSelecton {
+  id: string, 
+  label: string, 
+};
