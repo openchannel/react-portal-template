@@ -129,7 +129,7 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
           appFields: newAppFields,
           listApps: action.payload.singleAppData.list,
           selectedType: typeLabel,
-          curAppStatus: curApp!.parent?.status.value === 'suspended' ? curApp.parent.status.value : curApp.status.value,
+          curAppStatus: curApp!.parent?.status?.value === 'suspended' ? curApp.parent.status.value : curApp.status.value,
           appTypes: newArrTypes,
         }
       }
