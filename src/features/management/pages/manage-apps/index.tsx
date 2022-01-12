@@ -133,8 +133,8 @@ const ManageApp = (): JSX.Element => {
         </div>
         <div className="manage-app-table pb-2">
           <OcAppTable
-            descendingSortIcon={'assets/img/dropdown.svg'}
-            ascendingSortIcon={'assets/img/dropdown.svg'}
+            descendingSortIcon={'assets/img/dropdown-down.svg'}
+            ascendingSortIcon={'assets/img/dropdown-up.svg'}
             defaultAppIcon={'assets/img/default-app-icon.svg'}
             properties={allAppsData}
             noAppMessage={'No apps in your list'}
