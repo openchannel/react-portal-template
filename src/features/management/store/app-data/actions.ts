@@ -192,3 +192,27 @@ export const saveToDraft = (paramToDraft: ParamToDraftType) => async (dispatch: 
     notifyErrorResp(e);
   }
 };
+
+export const toDraftAndSubmit = (values: OcFormValues, massage: string, toSubmit: boolean, selectedType: string) => async () => {
+  try {  
+    const customData:OcFormValues = {};
+
+    for (const prop in values) {
+      if(prop.includes('customData.')) {
+        const toReplace = prop.replace('customData.','');
+        customData[toReplace] = values[prop];
+      }
+    }
+    const  { data } = await apps.createApp({name: values.name, type: selectedType , customData: customData});
+
+    if (toSubmit) {
+      await apps.publishAppByVersion(data.appId, {
+        version: data.version,
+        autoApprove: false,
+      }); 
+    }
+    notify.success(massage);
+  } catch(e) {
+    notifyErrorResp(e);
+  }
+};

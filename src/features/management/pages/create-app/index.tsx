@@ -1,28 +1,27 @@
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { notifyErrorResp } from 'features/common/libs/helpers';
-import { notify } from '@openchannel/react-common-components/dist/ui/common/atoms';
 import { MainTemplate } from 'features/common/templates';
 import { OcNavigationBreadcrumbs, OcSelect } from '@openchannel/react-common-components/dist/ui/common/molecules';
 import { useTypedSelector } from 'features/common/hooks';
-import { fileService, apps } from '@openchannel/react-common-services';
+import { fileService } from '@openchannel/react-common-services';
 import { OcLabelComponent } from '@openchannel/react-common-components/dist/ui/common/atoms';
 import { OcConfirmationModalComponent } from '@openchannel/react-common-components/dist/ui/common/organisms';
 import { OcFormValues, OcFormFormikHelpers, AppTypeModel } from '@openchannel/react-common-components';
 import { OcForm } from '@openchannel/react-common-components/dist/ui/form/organisms';
-import { getAppTypesOnly, updateFields} from '../../store/app-data';
+import { getAppTypesOnly, updateFields, toDraftAndSubmit} from '../../store/app-data';
 import { ConfirmUserModal } from './types';
 import { cancelModal, initialConfirmAppModal, submitModal } from './constants';
 import './styles.scss';
 
+const mappedFileService = {
+  fileUploadRequest: fileService.uploadToOpenChannel,
+  fileDetailsRequest: fileService.downloadFileDetails,
+};
+
 const CreateApp = (): JSX.Element => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const mappedFileService = {
-    fileUploadRequest: fileService.uploadToOpenChannel,
-    fileDetailsRequest: fileService.downloadFileDetails,
-  };
   const [modalState, setModalState] = React.useState<ConfirmUserModal>(initialConfirmAppModal);
   const [formValues, setFormValues] = React.useState<OcFormValues>();
 
@@ -42,7 +41,8 @@ const CreateApp = (): JSX.Element => {
 
   const closeModal = () => {
     if (modalState.toDraft && formValues) {
-      toDraftAndSubmit(formValues, 'App has been saved as draft', false);
+      dispatch(toDraftAndSubmit(formValues, 'App has been saved as draft', false, selectedType.id));
+      history.goBack();
     }
     setModalState(initialConfirmAppModal);
   };
@@ -51,12 +51,11 @@ const CreateApp = (): JSX.Element => {
     setModalState(cancelModal);
   };
 
-  const handleSubmitModal = () => {    
+  const handleSubmitModal = async () => {    
     if (modalState.submitButton && formValues) {
-        toDraftAndSubmit(formValues, 'App has been submitted for approval', true);
-    } else {
-      history.goBack();
+      await dispatch(toDraftAndSubmit(formValues, 'App has been submitted for approval', true, selectedType.id));
     }
+    history.goBack();
   };
 
   const handleEditFormSubmit = (values: OcFormValues, formikHelpers: OcFormFormikHelpers, action:string) => {
@@ -65,33 +64,9 @@ const CreateApp = (): JSX.Element => {
       setFormValues(values);
       setModalState(submitModal);
     } else if(action === 'save') {
-      toDraftAndSubmit(values, 'App has been saved as draft', false);
+      dispatch(toDraftAndSubmit(values, 'App has been saved as draft', false, selectedType.id));
+      history.goBack();
     }
-  };
-
-  const toDraftAndSubmit = async (values: OcFormValues, massage: string, toSubmit: boolean) => {
-    try {  
-      const customData:OcFormValues = {};
-
-      for (const prop in values) {
-        if(prop.includes('customData.')) {
-          const toReplace = prop.replace('customData.','');
-          customData[toReplace] = values[prop];
-        }
-      }
-      const  { data } = await apps.createApp({name: values.name, type: selectedType.id , customData: customData});
-
-      if (toSubmit) {
-        await apps.publishAppByVersion(data.appId, {
-          version: data.version,
-          autoApprove: false,
-        }); 
-      }
-      notify.success(massage);
-    } catch(e) {
-      notifyErrorResp(e);
-    }
-    history.goBack();
   };
 
   return (
