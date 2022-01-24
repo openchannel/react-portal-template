@@ -32,17 +32,9 @@ const CreateApp = (): JSX.Element => {
   React.useEffect(() => {
     dispatch(getAppTypesOnly());
     
-    // return () => setModalState(initialConfirmAppModal);
+    return () => setModalState(initialConfirmAppModal);
   }, []);
  
-React.useEffect(() => {
-  window.addEventListener("popstate", (event) => {
-
-    history.go(1);
-    // setModalState(cancelModal);
-
-  });
-}, [])
   const setSelected = React.useCallback( (selected: {label:string}) => {
     const form = listApps.find((e: AppTypeModel) => e.appTypeId === selected.label);
     dispatch(updateFields(selected.label, form));
