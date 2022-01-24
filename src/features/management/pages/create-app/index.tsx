@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { MainTemplate } from 'features/common/templates';
+import { notifyErrorResp } from 'features/common/libs/helpers';
 import { OcNavigationBreadcrumbs, OcSelect } from '@openchannel/react-common-components/dist/ui/common/molecules';
 import { useTypedSelector } from 'features/common/hooks';
 import { fileService } from '@openchannel/react-common-services';
@@ -41,8 +42,12 @@ const CreateApp = (): JSX.Element => {
 
   const closeModal = () => {
     if (modalState.toDraft && formValues) {
-      dispatch(toDraftAndSubmit(formValues, 'App has been saved as draft', false, selectedType.id));
-      history.goBack();
+      try {
+        dispatch(toDraftAndSubmit(formValues, 'App has been saved as draft', false, selectedType.id));
+        history.goBack();
+      } catch (e) {
+        notifyErrorResp(e);
+      }
     }
     setModalState(initialConfirmAppModal);
   };
@@ -53,7 +58,11 @@ const CreateApp = (): JSX.Element => {
 
   const handleSubmitModal = async () => {    
     if (modalState.submitButton && formValues) {
-      await dispatch(toDraftAndSubmit(formValues, 'App has been submitted for approval', true, selectedType.id));
+      try {
+        await dispatch(toDraftAndSubmit(formValues, 'App has been submitted for approval', true, selectedType.id));
+      } catch (e) {
+        notifyErrorResp(e);
+      }
     }
     history.goBack();
   };
@@ -64,8 +73,12 @@ const CreateApp = (): JSX.Element => {
       setFormValues(values);
       setModalState(submitModal);
     } else if(action === 'save') {
+      try {
       dispatch(toDraftAndSubmit(values, 'App has been saved as draft', false, selectedType.id));
       history.goBack();
+      } catch (e) {
+        notifyErrorResp(e);
+      }
     }
   };
 
