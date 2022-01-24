@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { MainTemplate } from 'features/common/templates';
-import { notifyErrorResp } from 'features/common/libs/helpers';
 import { OcNavigationBreadcrumbs, OcSelect } from '@openchannel/react-common-components/dist/ui/common/molecules';
 import { useTypedSelector } from 'features/common/hooks';
 import { fileService } from '@openchannel/react-common-services';
@@ -46,7 +45,7 @@ const CreateApp = (): JSX.Element => {
         dispatch(toDraftAndSubmit(formValues, 'App has been saved as draft', false, selectedType.id));
         history.goBack();
       } catch (e) {
-        notifyErrorResp(e);
+        // donothing
       }
     }
     setModalState(initialConfirmAppModal);
@@ -60,11 +59,11 @@ const CreateApp = (): JSX.Element => {
     if (modalState.submitButton && formValues) {
       try {
         await dispatch(toDraftAndSubmit(formValues, 'App has been submitted for approval', true, selectedType.id));
+        history.goBack();
       } catch (e) {
-        notifyErrorResp(e);
+       // donothing
       }
     }
-    history.goBack();
   };
 
   const handleEditFormSubmit = (values: OcFormValues, formikHelpers: OcFormFormikHelpers, action:string) => {
@@ -77,7 +76,7 @@ const CreateApp = (): JSX.Element => {
       dispatch(toDraftAndSubmit(values, 'App has been saved as draft', false, selectedType.id));
       history.goBack();
       } catch (e) {
-        notifyErrorResp(e);
+        // donothing
       }
     }
   };
