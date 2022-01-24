@@ -21,6 +21,11 @@ export type Action = {
     singleAppData: AppTypesList;
   };
 } | {
+  type: ActionTypes.SET_TYPES_ONLY;
+  payload: {
+    singleAppData: AppTypesList;
+  };
+} | {
   type: ActionTypes.SET_CHART | ActionTypes.SET_CHILD;
   payload: {
     list: FullAppData[];

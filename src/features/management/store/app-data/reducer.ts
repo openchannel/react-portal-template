@@ -134,6 +134,24 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
         }
       }
     }
+    case ActionTypes.SET_TYPES_ONLY: {
+      const newArrTypes:AppTypeSelecton[] = [];
+      const typeLabel = action.payload.singleAppData.list[0] ? action.payload.singleAppData.list[0] : null;
+      
+      action.payload.singleAppData.list.forEach((item:AppTypeModel) => {
+        newArrTypes.push({ id: item.appTypeId, label: item.label || ''});
+      });
+      return {
+        ...state,
+        singleAppData:{
+          ...state.singleAppData,
+          appFields: typeLabel,
+          listApps: action.payload.singleAppData.list,
+          selectedType: typeLabel ? { id: typeLabel.appTypeId, label: typeLabel.label} : 'App Not Found',
+          appTypes: newArrTypes,
+        }
+      }
+    }
     case ActionTypes.UPDATE_FIELDS: {
       const typeLabel = state.singleAppData.listApps.find((v:AppTypeModel) => v.appTypeId === action.payload.selected);
       return {

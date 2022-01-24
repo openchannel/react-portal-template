@@ -147,6 +147,15 @@ export const getAppTypes = (appId:string, version: number) => async (dispatch: D
   }
 };
 
+export const getAppTypesOnly = () => async (dispatch: Dispatch) => {
+  try {
+    const { data } = await AppTypeService.getAppTypes( 1, 100 );
+    dispatch({ type: ActionTypes.SET_TYPES_ONLY , payload: { singleAppData: data } });
+  } catch (e) {
+    notifyErrorResp(e);
+  }
+};
+
 export const updateFields = (selected: string, fields: AppTypeModel | null) => (dispatch: Dispatch) => {
   dispatch({ type: ActionTypes.UPDATE_FIELDS , payload: { selected, fields } });
 };
