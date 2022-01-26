@@ -22,7 +22,6 @@ import { fileService } from '@openchannel/react-common-services';
 import { OcConfirmationModalComponent } from '@openchannel/react-common-components/dist/ui/common/organisms';
 import { MainTemplate } from 'features/common/templates';
 import { useTypedSelector } from 'features/common/hooks';
-import { notifyErrorResp } from 'features/common/libs/helpers';
 import { updateChartData, getAppTypes, updateFields, saveToDraft } from '../../store/app-data';
 import { EditPage, ConfirmUserModal } from './types';
 import {
@@ -161,10 +160,16 @@ const EditApp = (): JSX.Element => {
         dispatch(
           saveToDraft({ ...paramToDraft, values: formValues, toSubmit: true, message: statusMsg }),
         );
+        goToBack();
       } catch (e) {
-        notifyErrorResp(e);
+        // donothing
       }
-    }
+    } else {
+      goToBack();
+    }  
+  };
+
+  const goToBack = () => {
     if (goTo && goTo.length > 0) {
       history.push(goTo);
     } else {
