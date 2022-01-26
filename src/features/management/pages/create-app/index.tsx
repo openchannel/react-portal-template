@@ -7,8 +7,8 @@ import { useTypedSelector } from 'features/common/hooks';
 import { fileService } from '@openchannel/react-common-services';
 import { OcLabelComponent } from '@openchannel/react-common-components/dist/ui/common/atoms';
 import { OcConfirmationModalComponent } from '@openchannel/react-common-components/dist/ui/common/organisms';
-import { OcFormValues, OcFormFormikHelpers, AppTypeModel } from '@openchannel/react-common-components';
-import { OcForm } from '@openchannel/react-common-components/dist/ui/form/organisms';
+import { OcFormValues, OcFormFormikHelpers, AppTypeModel, FullAppData } from '@openchannel/react-common-components';
+import { OcForm, OcSingleForm } from '@openchannel/react-common-components/dist/ui/form/organisms';
 import { getAppTypesOnly, updateFields, toDraftAndSubmit} from '../../store/app-data';
 import { ConfirmUserModal } from './types';
 import { cancelModal, initialConfirmAppModal, submitModal } from './constants';
@@ -24,6 +24,9 @@ const CreateApp = (): JSX.Element => {
   const dispatch = useDispatch();
   const [modalState, setModalState] = React.useState<ConfirmUserModal>(initialConfirmAppModal);
   const [formValues, setFormValues] = React.useState<OcFormValues>();
+  const [currentStep, setCurrentStep] = React.useState<number>(1);
+	const [maxStepsToShow, setMaxStepsToShow] = React.useState<number>(3);
+  const [isWizard, setIsWizard] = React.useState<boolean>(false);
 
   const { singleAppData: { listApps, selectedType, appTypes, appFields }
   } = useTypedSelector(({ appData }) => appData);
@@ -33,6 +36,11 @@ const CreateApp = (): JSX.Element => {
     
     return () => setModalState(initialConfirmAppModal);
   }, []);
+ 
+  React.useEffect(() => {
+    const curFormType = appFields?.fields.some((field:FullAppData) => field.type === 'fieldGroup');
+    setIsWizard(curFormType);
+  }, [appFields]);
  
   const setSelected = React.useCallback( (selected: {label:string}) => {
     const form = listApps.find((e: AppTypeModel) => e.appTypeId === selected.label);
@@ -108,8 +116,8 @@ const CreateApp = (): JSX.Element => {
             </div>
           </div>
         </form>
-        {appFields && (
-          <OcForm
+        {appFields && !isWizard && (
+          <OcSingleForm
             formJsonData={appFields}
             fileService={mappedFileService}
             onSubmit={handleEditFormSubmit}
@@ -118,7 +126,28 @@ const CreateApp = (): JSX.Element => {
             buttonPosition="between"
             showSaveBtn={true}
             showSubmitBtn={true}
+            displayType='page'
           />
+        )}
+        {appFields && isWizard && (
+          <OcForm
+            formJsonData={appFields}
+            fileService={mappedFileService}
+            displayType='wizard'
+            onSubmit={handleEditFormSubmit}
+            onCancel={handleEditFormCancel}
+            submitButtonText="Submit"
+            buttonPosition="between"
+            showSaveBtn={true}
+            showButton={true}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+            maxStepsToShow={maxStepsToShow}
+            setMaxStepsToShow={setMaxStepsToShow}
+            showProgressBar={true}
+            showGroupDescription={true}
+            showGroupHeading={true}
+            />
         )}
         <OcConfirmationModalComponent
           isOpened={modalState.isOpened}

@@ -5,7 +5,7 @@ import {
   OcNavigationBreadcrumbs,
   OcSelect,
 } from '@openchannel/react-common-components/dist/ui/common/molecules';
-import { OcForm } from '@openchannel/react-common-components/dist/ui/form/organisms';
+import { OcForm, OcSingleForm } from '@openchannel/react-common-components/dist/ui/form/organisms';
 import { OcLabelComponent } from '@openchannel/react-common-components/dist/ui/common/atoms';
 import {
   ChartStatisticFiledModel,
@@ -13,6 +13,7 @@ import {
   OcFormFormikHelpers,
   AppTypeModel,
   AppTypeFieldModel,
+  FullAppData,
 } from '@openchannel/react-common-components';
 import {
   OcChartComponent,
@@ -53,6 +54,9 @@ const EditApp = (): JSX.Element => {
   const [modalState, setModalState] = React.useState<ConfirmUserModal>(initialConfirmAppModal);
   const [formValues, setFormValues] = React.useState<OcFormValues>();
   const appToEdit: ChartStatisticFiledModel = { id: params.appId, label: '' };
+  const [currentStep, setCurrentStep] = React.useState<number>(1);
+	const [maxStepsToShow, setMaxStepsToShow] = React.useState<number>(3);
+  const [isWizard, setIsWizard] = React.useState<boolean>(false);
 
   const paramToDraft = {
     values: formValues,
@@ -75,6 +79,11 @@ const EditApp = (): JSX.Element => {
       dispatch(updateFields(selectedType, null));
     };
   }, []);
+
+  React.useEffect(() => {
+    const curFormType = appFields?.fields.some((field:FullAppData) => field.type === 'fieldGroup');
+    setIsWizard(curFormType);
+  }, [appFields]);
 
   const setSelected = React.useCallback(
     (selected: {label:string}) => {
@@ -189,8 +198,8 @@ const EditApp = (): JSX.Element => {
             </div>
           </div>
         </form>
-        {appFields && (
-          <OcForm
+        {appFields && !isWizard &&(
+          <OcSingleForm
             formJsonData={appFields}
             fileService={mappedFileService}
             onSubmit={handleEditFormSubmit}
@@ -200,6 +209,26 @@ const EditApp = (): JSX.Element => {
             showSaveBtn={curAppStatus === 'pending' ? false : true}
             showSubmitBtn={curAppStatus === 'suspended' ? false : true}
           />
+        )}
+        {appFields && isWizard && (
+          <OcForm
+            formJsonData={appFields}
+            fileService={mappedFileService}
+            displayType='wizard'
+            onSubmit={handleEditFormSubmit}
+            onCancel={handleEditFormCancel}
+            submitButtonText="Submit"
+            buttonPosition="between"
+            showSaveBtn={true}
+            showButton={true}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+            maxStepsToShow={maxStepsToShow}
+            setMaxStepsToShow={setMaxStepsToShow}
+            showProgressBar={true}
+            showGroupDescription={true}
+            showGroupHeading={true}
+            />
         )}
         <OcConfirmationModalComponent
           isOpened={modalState.isOpened}
