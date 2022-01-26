@@ -7,9 +7,9 @@ import { notify } from '@openchannel/react-common-components/dist/ui/common/atom
 import { OcEditUserFormComponent } from '@openchannel/react-common-components/dist/ui/auth/organisms';
 import { OcNavigationBreadcrumbs } from '@openchannel/react-common-components/dist/ui/common/molecules';
 import {
-  OcForm,
   OcFormFormikHelpers,
   OcFormValues,
+  OcSingleForm,
 } from '@openchannel/react-common-components/dist/ui/form/organisms';
 import { apps, fileService } from '@openchannel/react-common-services';
 
@@ -148,7 +148,7 @@ const Profile = (): JSX.Element => {
           </div>
           <div className="col-lg-4 mt-3 col-xxl-6 mt-lg-1 mt-8">
             {pathname === '/my-profile/changePassword' && (
-              <OcForm
+              <OcSingleForm
                 formJsonData={formPassword}
                 onSubmit={handleChangePasswordSubmit}
                 submitButtonText="Save"
