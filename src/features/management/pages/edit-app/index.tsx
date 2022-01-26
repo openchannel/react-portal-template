@@ -5,7 +5,7 @@ import {
   OcNavigationBreadcrumbs,
   OcSelect,
 } from '@openchannel/react-common-components/dist/ui/common/molecules';
-import { OcForm } from '@openchannel/react-common-components/dist/ui/form/organisms';
+import { OcSingleForm } from '@openchannel/react-common-components/dist/ui/form/organisms';
 import { OcLabelComponent } from '@openchannel/react-common-components/dist/ui/common/atoms';
 import {
   ChartStatisticFiledModel,
@@ -22,7 +22,6 @@ import { fileService } from '@openchannel/react-common-services';
 import { OcConfirmationModalComponent } from '@openchannel/react-common-components/dist/ui/common/organisms';
 import { MainTemplate } from 'features/common/templates';
 import { useTypedSelector } from 'features/common/hooks';
-import { notifyErrorResp } from 'features/common/libs/helpers';
 import { updateChartData, getAppTypes, updateFields, saveToDraft } from '../../store/app-data';
 import { EditPage, ConfirmUserModal } from './types';
 import {
@@ -53,6 +52,8 @@ const EditApp = (): JSX.Element => {
   const [modalState, setModalState] = React.useState<ConfirmUserModal>(initialConfirmAppModal);
   const [formValues, setFormValues] = React.useState<OcFormValues>();
   const appToEdit: ChartStatisticFiledModel = { id: params.appId, label: '' };
+  const [blockGoBack, setBlockGoBack] = React.useState<boolean>(true);
+  const [goTo, setGoTo] = React.useState<string>();
 
   const paramToDraft = {
     values: formValues,
@@ -76,6 +77,18 @@ const EditApp = (): JSX.Element => {
     };
   }, []);
 
+  React.useEffect(() => {
+    const unblock = history.block(({pathname}) => {
+      setGoTo(pathname);
+      handleEditFormCancel();
+      if (blockGoBack) {
+        return false;
+      }
+    });
+  
+    return () => unblock();
+  }, [blockGoBack, goTo]);
+
   const setSelected = React.useCallback(
     (selected: {label:string}) => {
       const form = listApps.find((e: AppTypeModel) => e.appTypeId === selected.label);
@@ -95,6 +108,7 @@ const EditApp = (): JSX.Element => {
   );
 
   const handleEditFormSubmit = (values: OcFormValues, formikHelpers: OcFormFormikHelpers, action:string) => {
+    setBlockGoBack(false);
     if(action === 'submit') {
       formikHelpers.setSubmitting(false);
       setFormValues(values);
@@ -117,6 +131,7 @@ const EditApp = (): JSX.Element => {
 
   const handleEditFormCancel = () => {
     setModalState(cancelModal);
+    setBlockGoBack(false);
   };
 
   const closeModal = () => {
@@ -145,11 +160,21 @@ const EditApp = (): JSX.Element => {
         dispatch(
           saveToDraft({ ...paramToDraft, values: formValues, toSubmit: true, message: statusMsg }),
         );
+        goToBack();
       } catch (e) {
-        notifyErrorResp(e);
+        // donothing
       }
+    } else {
+      goToBack();
+    }  
+  };
+
+  const goToBack = () => {
+    if (goTo && goTo.length > 0) {
+      history.push(goTo);
+    } else {
+      history.goBack();
     }
-    history.goBack();
   };
   
   return (
@@ -190,7 +215,7 @@ const EditApp = (): JSX.Element => {
           </div>
         </form>
         {appFields && (
-          <OcForm
+          <OcSingleForm
             formJsonData={appFields}
             fileService={mappedFileService}
             onSubmit={handleEditFormSubmit}
