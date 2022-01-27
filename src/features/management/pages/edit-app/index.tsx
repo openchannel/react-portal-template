@@ -142,7 +142,7 @@ const EditApp = (): JSX.Element => {
     setBlockGoBack(false);
   };
 
-  const closeModal = () => {
+  const onCancelModal = () => {
     if (modalState.toDraft && formValues) {
       let statusMsg = '';
       if (curAppStatus === 'approved') {
@@ -156,6 +156,11 @@ const EditApp = (): JSX.Element => {
       setBlockGoBack(true);
     }
     setModalState(initialConfirmAppModal);
+  };
+
+  const onCloseModal = () => {
+    setModalState(initialConfirmAppModal);
+    setBlockGoBack(true);
   };
 
   const handleSubmitModal = () => {
@@ -259,8 +264,8 @@ const EditApp = (): JSX.Element => {
         <OcConfirmationModalComponent
           isOpened={modalState.isOpened}
           onSubmit={handleSubmitModal}
-          onClose={closeModal}
-          onCancel={closeModal}
+          onClose={onCancelModal}
+          onCancel={onCloseModal}
           modalTitle={modalState.modalTitle}
           modalText={modalState.modalText}
           confirmButtonText={modalState.confirmButtonText}

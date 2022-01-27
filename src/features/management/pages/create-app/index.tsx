@@ -61,7 +61,7 @@ const CreateApp = (): JSX.Element => {
     dispatch(updateFields(selected.label, form));
   },[listApps]);
 
-  const closeModal = () => {
+  const onCancelModal = () => {
     if (modalState.toDraft && formValues) {
       try {
         dispatch(toDraftAndSubmit(formValues, 'App has been saved as draft', false, selectedType.id));
@@ -73,6 +73,11 @@ const CreateApp = (): JSX.Element => {
       setBlockGoBack(true);
     }
     setModalState(initialConfirmAppModal);
+  };
+
+  const onCloseModal = () => {
+    setModalState(initialConfirmAppModal);
+    setBlockGoBack(true);
   };
 
   const handleEditFormCancel = () => {
@@ -180,8 +185,8 @@ const CreateApp = (): JSX.Element => {
         <OcConfirmationModalComponent
           isOpened={modalState.isOpened}
           onSubmit={handleSubmitModal}
-          onClose={closeModal}
-          onCancel={closeModal}
+          onClose={onCloseModal}
+          onCancel={onCancelModal}
           modalTitle={modalState.modalTitle}
           modalText={modalState.modalText}
           confirmButtonText={modalState.confirmButtonText}
