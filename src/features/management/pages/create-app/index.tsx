@@ -27,6 +27,8 @@ const CreateApp = (): JSX.Element => {
   const [currentStep, setCurrentStep] = React.useState<number>(1);
 	const [maxStepsToShow, setMaxStepsToShow] = React.useState<number>(3);
   const [isWizard, setIsWizard] = React.useState<boolean>(false);
+  const [blockGoBack, setBlockGoBack] = React.useState<boolean>(true);
+  const [goTo, setGoTo] = React.useState<string>();
 
   const { singleAppData: { listApps, selectedType, appTypes, appFields }
   } = useTypedSelector(({ appData }) => appData);
@@ -36,7 +38,19 @@ const CreateApp = (): JSX.Element => {
     
     return () => setModalState(initialConfirmAppModal);
   }, []);
- 
+
+  React.useEffect(() => {
+    const unblock = history.block(({pathname}) => {
+      setGoTo(pathname);
+      handleEditFormCancel();
+      if (blockGoBack) {
+        return false;
+      }
+    });
+  
+    return () => unblock();
+  }, [blockGoBack]);
+
   React.useEffect(() => {
     const curFormType = appFields?.fields.some((field:FullAppData) => field.type === 'fieldGroup');
     setIsWizard(curFormType);
@@ -55,26 +69,32 @@ const CreateApp = (): JSX.Element => {
       } catch (e) {
         // donothing
       }
+    } else {
+      setBlockGoBack(true);
     }
     setModalState(initialConfirmAppModal);
   };
 
   const handleEditFormCancel = () => {
     setModalState(cancelModal);
+    setBlockGoBack(false);
   };
 
   const handleSubmitModal = async () => {    
     if (modalState.submitButton && formValues) {
       try {
         await dispatch(toDraftAndSubmit(formValues, 'App has been submitted for approval', true, selectedType.id));
-        history.goBack();
+        goToBack();
       } catch (e) {
        // donothing
       }
+    } else {
+      goToBack();
     }
   };
 
   const handleEditFormSubmit = (values: OcFormValues, formikHelpers: OcFormFormikHelpers, action:string) => {
+    setBlockGoBack(false);
     if(action === 'submit') {
       formikHelpers.setSubmitting(false);
       setFormValues(values);
@@ -82,10 +102,18 @@ const CreateApp = (): JSX.Element => {
     } else if(action === 'save') {
       try {
       dispatch(toDraftAndSubmit(values, 'App has been saved as draft', false, selectedType.id));
-      history.goBack();
+      goToBack();
       } catch (e) {
         // donothing
       }
+    }
+  };
+
+  const goToBack = () => {
+    if (goTo && goTo.length > 0) {
+      history.push(goTo);
+    } else {
+      history.goBack();
     }
   };
 
