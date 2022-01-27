@@ -102,7 +102,7 @@ const CreateApp = (): JSX.Element => {
     } else if(action === 'save') {
       try {
       dispatch(toDraftAndSubmit(values, 'App has been saved as draft', false, selectedType.id));
-      goToBack();
+      history.goBack();
       } catch (e) {
         // donothing
       }
