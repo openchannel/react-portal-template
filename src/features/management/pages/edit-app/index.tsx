@@ -144,6 +144,8 @@ const EditApp = (): JSX.Element => {
       }
       dispatch(saveToDraft({ ...paramToDraft, values: formValues, message: statusMsg }));
       history.goBack();
+    } else {
+      setBlockGoBack(true);
     }
     setModalState(initialConfirmAppModal);
   };
