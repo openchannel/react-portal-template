@@ -147,6 +147,15 @@ export const getAppTypes = (appId:string, version: number) => async (dispatch: D
   }
 };
 
+export const getAppTypesOnly = () => async (dispatch: Dispatch) => {
+  try {
+    const { data } = await AppTypeService.getAppTypes( 1, 100 );
+    dispatch({ type: ActionTypes.SET_TYPES_ONLY , payload: { singleAppData: data } });
+  } catch (e) {
+    notifyErrorResp(e);
+  }
+};
+
 export const updateFields = (selected: string, fields: AppTypeModel | null) => (dispatch: Dispatch) => {
   dispatch({ type: ActionTypes.UPDATE_FIELDS , payload: { selected, fields } });
 };
@@ -179,6 +188,30 @@ export const saveToDraft = (paramToDraft: ParamToDraftType) => async (dispatch: 
     }
     dispatch({ type: ActionTypes.SET_VERSION , payload: { appVer:  data.version} });
     notify.success(message);
+  } catch(e) {
+    notifyErrorResp(e);
+  }
+};
+
+export const toDraftAndSubmit = (values: OcFormValues, massage: string, toSubmit: boolean, selectedType: string) => async () => {
+  try {  
+    const customData:OcFormValues = {};
+
+    for (const prop in values) {
+      if(prop.includes('customData.')) {
+        const toReplace = prop.replace('customData.','');
+        customData[toReplace] = values[prop];
+      }
+    }
+    const  { data } = await apps.createApp({name: values.name, type: selectedType , customData: customData});
+
+    if (toSubmit) {
+      await apps.publishAppByVersion(data.appId, {
+        version: data.version,
+        autoApprove: false,
+      }); 
+    }
+    notify.success(massage);
   } catch(e) {
     notifyErrorResp(e);
   }

@@ -5,4 +5,5 @@ export enum ActionTypes {
   SET_APP_TYPES = '@appData/SET_APP_TYPES',
   UPDATE_FIELDS = '@appData/UPDATE_FIELDS',
   SET_VERSION = '@appData/SET_VERSION',
+  SET_TYPES_ONLY = '@appData/SET_TYPES_ONLY',
 }
