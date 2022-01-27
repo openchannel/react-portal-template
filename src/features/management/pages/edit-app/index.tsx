@@ -264,8 +264,8 @@ const EditApp = (): JSX.Element => {
         <OcConfirmationModalComponent
           isOpened={modalState.isOpened}
           onSubmit={handleSubmitModal}
-          onClose={onCancelModal}
-          onCancel={onCloseModal}
+          onClose={onCloseModal}
+          onCancel={onCancelModal}
           modalTitle={modalState.modalTitle}
           modalText={modalState.modalText}
           confirmButtonText={modalState.confirmButtonText}
