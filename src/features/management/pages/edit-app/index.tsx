@@ -6,7 +6,7 @@ import {
   OcSelect,
 } from '@openchannel/react-common-components/dist/ui/common/molecules';
 import { OcForm, OcSingleForm } from '@openchannel/react-common-components/dist/ui/form/organisms';
-import { OcLabelComponent } from '@openchannel/react-common-components/dist/ui/common/atoms';
+import { OcError, OcLabelComponent } from '@openchannel/react-common-components/dist/ui/common/atoms';
 import {
   ChartStatisticFiledModel,
   OcFormValues,
@@ -82,9 +82,10 @@ const EditApp = (): JSX.Element => {
   }, []);
 
   React.useEffect(() => {
-    const curFormType = appFields?.fields.some((field:FullAppData) => field.type === 'fieldGroup');
+    const curFormType = appFields?.fields?.some((field:FullAppData) => field.type === 'fieldGroup');
     setIsWizard(curFormType);
   }, [appFields]);
+  
   React.useEffect(() => {
     const unblock = history.block(({pathname}) => {
       setGoTo(pathname);
@@ -100,8 +101,8 @@ const EditApp = (): JSX.Element => {
   const setSelected = React.useCallback(
     (selected: {label:string}) => {
       const form = listApps.find((e: AppTypeModel) => e.appTypeId === selected.label);
-      const savedName = appFields.fields.find((e: AppTypeFieldModel) => e.id === 'name');
-      form.fields.find((e: AppTypeFieldModel) => e.id === 'name').defaultValue = savedName.defaultValue;
+      const savedName = appFields?.fields.find((e: AppTypeFieldModel) => e.id === 'name');
+      form.fields.find((e: AppTypeFieldModel) => e.id === 'name').defaultValue = savedName?.defaultValue;
       
       dispatch(updateFields(selected.label, form));
     },
@@ -228,8 +229,9 @@ const EditApp = (): JSX.Element => {
               />
             </div>
           </div>
+        {selectedType === false  && ( <OcError message="The type for this app no longer exists, please choose a new type"/>)}
         </form>
-        {appFields && !isWizard &&(
+        {appFields && !isWizard && selectedType &&(
           <OcSingleForm
             formJsonData={appFields}
             fileService={mappedFileService}
@@ -241,7 +243,7 @@ const EditApp = (): JSX.Element => {
             showSubmitBtn={curAppStatus === 'suspended' ? false : true}
           />
         )}
-        {appFields && isWizard && (
+        {appFields && isWizard && selectedType  && (
           <OcForm
             formJsonData={appFields}
             fileService={mappedFileService}

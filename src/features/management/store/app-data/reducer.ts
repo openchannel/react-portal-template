@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import { FullAppData, ChartStatisticFiledModel, AppTypeModel, AppTypeFieldModel } from '@openchannel/react-common-components';
+import { FullAppData, ChartStatisticFiledModel, AppTypeModel, AppTypeFieldModel, AppFormField } from '@openchannel/react-common-components';
 import { ActionTypes } from './action-types';
 import { Action, DataReducer, AppType, AppTypeSelecton } from './types';
 import { defaultProps } from 'features/management/pages/manage-apps/constants';
@@ -103,12 +103,10 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
       const newArrTypes:AppTypeSelecton[] = [];
       const { curApp } = action.payload;
       let newAppFields:AppType | null = null;
-      let typeLabel:string | AppTypeSelecton = 'App Not Found';
+      let typeLabel:AppTypeSelecton | boolean = false;
 
       action.payload.singleAppData.list.forEach((item:AppTypeModel) => {
-        
-
-        if (item.appTypeId === curApp!.type) {  
+        if (item.appTypeId === curApp!.type || action.payload.singleAppData.count === 1) {
           typeLabel = { id: item.appTypeId, label: item.label || ''}
           newAppFields = {
             ...item,
@@ -121,7 +119,7 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
         };
         newArrTypes.push({ id: item.appTypeId, label: item.label || ''});
       });
-      
+
       return {
         ...state,
         apps: [],
@@ -131,6 +129,7 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
           selectedType: typeLabel,
           curAppStatus: curApp!.parent?.status?.value === 'suspended' ? curApp.parent.status.value : curApp.status.value,
           appTypes: newArrTypes,
+          curApp,
         }
       }
     }
@@ -154,12 +153,24 @@ export const appDataReducer = (state = initialState, action: Action): DataReduce
     }
     case ActionTypes.UPDATE_FIELDS: {
       const typeLabel = state.singleAppData.listApps.find((v:AppTypeModel) => v.appTypeId === action.payload.selected);
+      let newFields: AppFormField[] | undefined = action.payload.fields?.fields;
+      
+      if (state.singleAppData.curApp) {
+        newFields = newFields?.map((field) => {
+          return {
+            ...field,
+            ...(get(state.singleAppData.curApp, field.id) && { defaultValue: get(state.singleAppData.curApp, field.id) }),
+          }
+        });
+      }
+      
       return {
         ...state,
         singleAppData: {
           ...state.singleAppData,
-          appFields: action.payload.fields,
+          appFields: {...action.payload.fields, fields: newFields},
           selectedType: typeLabel ? { id: typeLabel.appTypeId, label: typeLabel.label} : '',
+          curApp: action.payload.fields?.fields ? state.singleAppData.curApp : null,
         }
       }
     }
