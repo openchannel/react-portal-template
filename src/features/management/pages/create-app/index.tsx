@@ -52,7 +52,7 @@ const CreateApp = (): JSX.Element => {
   }, [blockGoBack]);
 
   React.useEffect(() => {
-    const curFormType = appFields?.fields.some((field:FullAppData) => field.type === 'fieldGroup');
+    const curFormType = appFields?.fields?.some((field:FullAppData) => field.type === 'fieldGroup');
     setIsWizard(curFormType);
   }, [appFields]);
  
