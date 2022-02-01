@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@openchannel/react-common-components": "^0.1.145",
+    "@openchannel/react-common-components": "^0.1.146",
     "@openchannel/react-common-services": "^0.1.130",
     "lodash.isempty": "^4.4.0",
     "node-sass": "^4.14.1",
