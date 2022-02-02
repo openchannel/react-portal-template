@@ -14,11 +14,10 @@ const GetStarted = () => {
     history.push(home?.bottomCalloutButtonLocation || '/');
   };
 
-  const getToken = (token:string) =>  new URLSearchParams(search).get(token);
-
   React.useEffect(() => {
-    const accessToken = getToken('jwtAccessToken');
-    const refreshToken = getToken('jwtRefreshToken');
+    const searchParams = new URLSearchParams(search);
+    const accessToken = searchParams.get('jwtAccessToken');
+    const refreshToken = searchParams.get('jwtRefreshToken');
 
     if (accessToken && refreshToken) {
       setSession({accessToken, refreshToken});
