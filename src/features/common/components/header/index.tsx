@@ -14,7 +14,7 @@ import './style.scss';
 
 // eslint-disable-next-line
 export const Header = ({ cmsData }: any): JSX.Element => {
-  const { config } = useTypedSelector(({ oidc }) => oidc);
+  const { isSamlLogin } = useTypedSelector(({ oidc }) => oidc);
   const [isCollapsed, setIsCollapsed] = React.useState(false);
   const [isMobileMenuCollapsed, setIsMobileMenuCollapsed] = React.useState(false);
   const history = useHistory();
@@ -191,7 +191,7 @@ export const Header = ({ cmsData }: any): JSX.Element => {
                 <Link className="btn header-login-btn header-btn" to="/login">
                   Log in
                 </Link>
-               {config?.type !== 'SAML_20' && (
+               {!isSamlLogin && (
                 <Link className="btn btn-primary header-btn ml-md-2" to="/signup">
                   Sign up
                 </Link>

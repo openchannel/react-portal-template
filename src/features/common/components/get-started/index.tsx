@@ -15,8 +15,9 @@ const GetStarted = () => {
   };
 
   React.useEffect(() => {
-    const accessToken = new URLSearchParams(search).get('jwtAccessToken');
-    const refreshToken = new URLSearchParams(search).get('jwtRefreshToken');
+    const getToken = (token:string) =>  new URLSearchParams(search).get(token);
+    const accessToken = getToken('jwtAccessToken');
+    const refreshToken = getToken('jwtRefreshToken');
 
     if (accessToken && refreshToken) {
       setSession({accessToken, refreshToken});

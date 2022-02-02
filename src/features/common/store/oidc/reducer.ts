@@ -5,6 +5,7 @@ const initialState = {
   isLoading: false,
   isLoaded: false,
   isSsoLogin: true,
+  isSamlLogin: false,
   userManager: null,
   config: null,
 };
@@ -32,6 +33,7 @@ export const oidcReducer = (state: Oidc = initialState, action: Action): Oidc =>
         ...state,
         userManager: action.payload.userManager,
         isSsoLogin: action.payload.isSsoLogin,
+        isSamlLogin: action.payload.isSamlLogin,
         config: action.payload.config,
       };
     }

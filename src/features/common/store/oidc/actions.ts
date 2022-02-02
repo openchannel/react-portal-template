@@ -15,11 +15,13 @@ const setUserManager = (config?: ConfigObject, type?: string) => {
       payload: { isSsoLogin: false, userManager: null },
     };
   }
+  const loginType = type === 'SAML_20' ? false : true;
 
   return {
     type: ActionTypes.SET_USER_MANAGER,
     payload: {
-      isSsoLogin: type === 'SAML_20' ? false : true,
+      isSsoLogin: loginType,
+      isSamlLogin: !loginType,
       userManager: new UserManager(normalizeOIdConfig(config)),
       config,
     },

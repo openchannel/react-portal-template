@@ -19,9 +19,9 @@ const LoginPage = (): JSX.Element => {
   const [serverErrorValidation, setServerErrorValidation] = React.useState(false);
   const [isUnverifiedEmail, setIsUnverifiedEmail] = React.useState(false);
   const searchParams = React.useMemo(() => getSearchParams(window.location.search), []);
-  const { config } = useTypedSelector(({ oidc }) => oidc);
+  const { config, isSamlLogin } = useTypedSelector(({ oidc }) => oidc);
   React.useEffect(() => {
-    if (config?.type === 'SAML_20') {
+    if (isSamlLogin) {
       searchParams?.return &&  localStorage.setItem('redirectUrl', searchParams.return);
       window.open(`${config?.singleSignOnUrl}?RelayState=${window.location.href}`, "_blank");
     }
@@ -73,7 +73,7 @@ const LoginPage = (): JSX.Element => {
   return (
     <div className="bg-container pt-sm-5">
       <div className="login-position">
-        {config?.type !== 'SAML_20' && (<OcLoginComponent
+        {!isSamlLogin && (<OcLoginComponent
           signupUrl="/signup"
           forgotPwdUrl="/forgot-password"
           handleSubmit={onSubmit}
