@@ -7,6 +7,7 @@ export interface Oidc {
   isLoaded: boolean;
   isSsoLogin: boolean;
   userManager: UserManager | null;
+  config: any;
 }
 
 export type Action =
@@ -15,6 +16,7 @@ export type Action =
       payload: {
         userManager: UserManager | null;
         isSsoLogin: boolean;
+        config: any;
       };
     }
   | {

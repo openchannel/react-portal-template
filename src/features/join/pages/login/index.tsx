@@ -11,6 +11,7 @@ import { sendActivationCode } from '../../store/join';
 
 import companyLogo from '../../../../../public/assets/img/company-logo-2x.png';
 import './styles.scss';
+import { useTypedSelector } from 'features/common/hooks';
 
 const LoginPage = (): JSX.Element => {
   const history = useHistory();
@@ -18,6 +19,13 @@ const LoginPage = (): JSX.Element => {
   const [serverErrorValidation, setServerErrorValidation] = React.useState(false);
   const [isUnverifiedEmail, setIsUnverifiedEmail] = React.useState(false);
   const searchParams = React.useMemo(() => getSearchParams(window.location.search), []);
+  const { config } = useTypedSelector(({ oidc }) => oidc);
+  React.useEffect(() => {
+    if (config?.type === 'SAML_20') {
+      searchParams?.return &&  localStorage.setItem('redirectUrl', searchParams.return);
+      window.open(`${config?.singleSignOnUrl}?RelayState=${window.location.href}`, "_blank");
+    }
+  },[]);
 
   const onActivationLinkClick = React.useCallback((email) => {
     dispatch(sendActivationCode(email));
@@ -65,7 +73,7 @@ const LoginPage = (): JSX.Element => {
   return (
     <div className="bg-container pt-sm-5">
       <div className="login-position">
-        <OcLoginComponent
+        {config?.type !== 'SAML_20' && (<OcLoginComponent
           signupUrl="/signup"
           forgotPwdUrl="/forgot-password"
           handleSubmit={onSubmit}
@@ -74,6 +82,7 @@ const LoginPage = (): JSX.Element => {
           isIncorrectEmail={serverErrorValidation}
           isUnverifiedEmail={isUnverifiedEmail}
         />
+        )}
       </div>
     </div>
   );

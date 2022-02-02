@@ -83,7 +83,7 @@ export const tryLoginByRefreshToken = () => async (dispatch: Dispatch) => {
 
 export const logout = () => async (dispatch: Dispatch, getState: () => RootState) => {
   const {
-    oidc: { isSsoLogin, userManager },
+    oidc: { isSsoLogin, userManager, config },
   } = getState();
 
   await auth.logOut();
@@ -93,6 +93,8 @@ export const logout = () => async (dispatch: Dispatch, getState: () => RootState
     if (!userManager) return;
 
     await userManager.signoutRedirect();
+  } else if (config?.type === 'SAML_20') {
+    window.location.href = config?.singleLogOutUrl;
   }
 };
 

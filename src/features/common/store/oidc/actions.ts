@@ -8,7 +8,7 @@ import { ActionTypes } from './action-types';
 const startLoading = () => ({ type: ActionTypes.START_LOADING });
 const finishLoading = () => ({ type: ActionTypes.FINISH_LOADING });
 
-const setUserManager = (config?: ConfigObject) => {
+const setUserManager = (config?: ConfigObject, type?: string) => {
   if (!config) {
     return {
       type: ActionTypes.SET_USER_MANAGER,
@@ -19,8 +19,9 @@ const setUserManager = (config?: ConfigObject) => {
   return {
     type: ActionTypes.SET_USER_MANAGER,
     payload: {
-      isSsoLogin: true,
+      isSsoLogin: type === 'SAML_20' ? false : true,
       userManager: new UserManager(normalizeOIdConfig(config)),
+      config,
     },
   };
 };
@@ -31,7 +32,7 @@ export const fetchAuthConfig = () => async (dispatch: Dispatch) => {
   try {
     const { data } = await auth.getAuthConfig();
 
-    dispatch(setUserManager(data as ConfigObject));
+    dispatch(setUserManager(data as ConfigObject, data.type));
     dispatch(finishLoading());
   } catch (error) {
     dispatch(setUserManager());
