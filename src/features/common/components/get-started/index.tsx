@@ -14,8 +14,9 @@ const GetStarted = () => {
     history.push(home?.bottomCalloutButtonLocation || '/');
   };
 
+  const getToken = (token:string) =>  new URLSearchParams(search).get(token);
+
   React.useEffect(() => {
-    const getToken = (token:string) =>  new URLSearchParams(search).get(token);
     const accessToken = getToken('jwtAccessToken');
     const refreshToken = getToken('jwtRefreshToken');
 
