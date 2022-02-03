@@ -22,8 +22,6 @@ const LoginPage = (): JSX.Element => {
   const { config, isSamlLogin } = useTypedSelector(({ oidc }) => oidc);
   React.useEffect(() => {
     if (isSamlLogin) {
-      console.log(history);
-      
       searchParams?.return &&  localStorage.setItem('redirectUrl', searchParams.return);
       window.open(`${config?.singleSignOnUrl}?RelayState=${window.location.origin}`, "_blank");
     }
