@@ -41,7 +41,7 @@ definitions:
     - step: &push-to-github
         name: Push to GitHub
         script:
-          - git remote set-url origin git@github.com:openchannel/react-market-template.git
+          - git remote set-url origin git@github.com:openchannel/react-portal-template.git
           - git remote -v
           - git push origin master:main
           - git push origin --force --tags
