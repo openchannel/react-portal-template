@@ -1,3 +1,6 @@
+clone:
+  depth: full              # SonarCloud scanner needs the full history to assign issues properly
+
 definitions:
   services:
     docker:
@@ -38,6 +41,8 @@ definitions:
           - export AWS_S3="`aws ssm get-parameter --region $REGION --with-decryption --name /ECS-CLUSTER/$CLUSTER_NAME/${APP_NAME}/AWS_S3 --output text --query Parameter.Value`"
           - aws s3 sync --delete build/ s3://$AWS_S3
           - aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths /index.html "/assets*"
+          - pipe: sonarsource/sonarcloud-scan:1.2.1
+          - pipe: sonarsource/sonarcloud-quality-gate:0.1.4
 
 pipelines:
   custom:

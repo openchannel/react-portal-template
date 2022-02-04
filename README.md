@@ -1,6 +1,6 @@
 # Template React Portal
- [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=openchannel_react-portal-template&metric=alert_status&token=3be31c8f86a9d425e8a04bb3c1e624897c81eb62)](https://sonarcloud.io/dashboard?id=openchannel_react-portal-template)
- [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=openchannel_react-portal-template&metric=coverage&token=3be31c8f86a9d425e8a04bb3c1e624897c81eb62)](https://sonarcloud.io/dashboard?id=openchannel_react-portal-template)
+ [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=openchannel_react-portal-template&metric=alert_status&token=0585888615fa605da8c20310dfe5e64f1a53df65)](https://sonarcloud.io/dashboard?id=openchannel_react-portal-template)
+ [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=openchannel_react-portal-template&metric=coverage&token=0585888615fa605da8c20310dfe5e64f1a53df65)](https://sonarcloud.io/dashboard?id=openchannel_react-portal-template)
 
 ## Table of Contents
 
