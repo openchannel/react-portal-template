@@ -159,7 +159,6 @@ const CreateApp = (): JSX.Element => {
             buttonPosition="between"
             showSaveBtn={true}
             showSubmitBtn={true}
-            displayType='page'
           />
         )}
         {appFields && isWizard && (
