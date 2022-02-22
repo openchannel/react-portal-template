@@ -6,7 +6,10 @@ import {
   OcSelect,
 } from '@openchannel/react-common-components/dist/ui/common/molecules';
 import { OcForm, OcSingleForm } from '@openchannel/react-common-components/dist/ui/form/organisms';
-import { OcError, OcLabelComponent } from '@openchannel/react-common-components/dist/ui/common/atoms';
+import {
+  OcError,
+  OcLabelComponent,
+} from '@openchannel/react-common-components/dist/ui/common/atoms';
 import {
   ChartStatisticFiledModel,
   OcFormValues,
@@ -46,7 +49,7 @@ const EditApp = (): JSX.Element => {
     countText,
     singleAppData: { listApps, selectedType, appTypes, appFields, curAppStatus },
   } = useTypedSelector(({ appData }) => appData);
-  
+
   const history = useHistory();
   const dispatch = useDispatch();
   const params: EditPage = useParams();
@@ -54,11 +57,19 @@ const EditApp = (): JSX.Element => {
   const [formValues, setFormValues] = React.useState<OcFormValues>();
   const appToEdit: ChartStatisticFiledModel = { id: params.appId, label: '' };
   const [currentStep, setCurrentStep] = React.useState<number>(1);
-	const [maxStepsToShow, setMaxStepsToShow] = React.useState<number>(3);
+  const [maxStepsToShow, setMaxStepsToShow] = React.useState<number>(3);
   const [isWizard, setIsWizard] = React.useState<boolean>(false);
   const [blockGoBack, setBlockGoBack] = React.useState<boolean>(true);
   const [goTo, setGoTo] = React.useState<string>();
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [formik, pullFormik] = React.useState<any>({
+    errors: {},
+    touched: {},
+    isSubmitting: false,
+    values: {},
+    isValidating: false,
+    submitCount: 0,
+  });
   const paramToDraft = {
     values: formValues,
     message: '',
@@ -82,28 +93,31 @@ const EditApp = (): JSX.Element => {
   }, []);
 
   React.useEffect(() => {
-    const curFormType = appFields?.fields?.some((field:FullAppData) => field.type === 'fieldGroup');
+    const curFormType = appFields?.fields?.some(
+      (field: FullAppData) => field.type === 'fieldGroup',
+    );
     setIsWizard(curFormType);
   }, [appFields]);
-  
+
   React.useEffect(() => {
-    const unblock = history.block(({pathname}) => {
+    const unblock = history.block(({ pathname }) => {
       setGoTo(pathname);
       handleEditFormCancel();
       if (blockGoBack) {
         return false;
       }
     });
-  
+
     return () => unblock();
   }, [blockGoBack, goTo]);
 
   const setSelected = React.useCallback(
-    (selected: {label:string}) => {
+    (selected: { label: string }) => {
       const form = listApps.find((e: AppTypeModel) => e.appTypeId === selected.label);
       const savedName = appFields?.fields.find((e: AppTypeFieldModel) => e.id === 'name');
-      form.fields.find((e: AppTypeFieldModel) => e.id === 'name').defaultValue = savedName?.defaultValue;
-      
+      form.fields.find((e: AppTypeFieldModel) => e.id === 'name').defaultValue =
+        savedName?.defaultValue;
+
       dispatch(updateFields(selected.label, form));
     },
     [listApps],
@@ -116,9 +130,13 @@ const EditApp = (): JSX.Element => {
     [appToEdit],
   );
 
-  const handleEditFormSubmit = (values: OcFormValues, formikHelpers: OcFormFormikHelpers, action:string) => {
+  const handleEditFormSubmit = (
+    values: OcFormValues,
+    formikHelpers: OcFormFormikHelpers,
+    action: string,
+  ) => {
     setBlockGoBack(false);
-    if(action === 'submit') {
+    if (action === 'submit') {
       formikHelpers.setSubmitting(false);
       setFormValues(values);
       if (curAppStatus === 'pending') {
@@ -126,15 +144,22 @@ const EditApp = (): JSX.Element => {
       } else {
         setModalState(submitModal);
       }
-    } else if(action === 'save') {
+    } else if (action === 'save') {
       let statusMsg = '';
       if (curAppStatus === 'approved') {
         statusMsg = 'New app version created and saved as draft';
       } else {
         statusMsg = 'App has been saved as draft';
       }
-      dispatch(saveToDraft({ ...paramToDraft, values: { ...values }, message: statusMsg }));
-      history.goBack();
+      dispatch(
+        saveToDraft(
+          { ...paramToDraft, values: { ...values }, message: statusMsg },
+          formik,
+          setModalState,
+          history.goBack,
+        ),
+      );
+      // history.goBack();
     }
   };
 
@@ -174,15 +199,20 @@ const EditApp = (): JSX.Element => {
       }
       try {
         dispatch(
-          saveToDraft({ ...paramToDraft, values: formValues, toSubmit: true, message: statusMsg }),
+          saveToDraft(
+            { ...paramToDraft, values: formValues, toSubmit: true, message: statusMsg },
+            formik,
+            setModalState,
+            goToBack,
+          ),
         );
-        goToBack();
+        // goToBack();
       } catch (e) {
         // donothing
       }
     } else {
       goToBack();
-    }  
+    }
   };
 
   const goToBack = () => {
@@ -192,7 +222,7 @@ const EditApp = (): JSX.Element => {
       history.goBack();
     }
   };
-  
+
   return (
     <MainTemplate>
       <div className="bg-container edit-app-header">
@@ -225,13 +255,15 @@ const EditApp = (): JSX.Element => {
                 onSelectionChange={setSelected}
                 selectValArr={appTypes}
                 value={selectedType?.label}
-                labelField='label'
+                labelField="label"
               />
             </div>
           </div>
-        {selectedType === false  && ( <OcError message="The type for this app no longer exists, please choose a new type"/>)}
+          {selectedType === false && (
+            <OcError message="The type for this app no longer exists, please choose a new type" />
+          )}
         </form>
-        {appFields && !isWizard && selectedType &&(
+        {appFields && !isWizard && selectedType && (
           <OcSingleForm
             formJsonData={appFields}
             fileService={mappedFileService}
@@ -243,11 +275,11 @@ const EditApp = (): JSX.Element => {
             showSubmitBtn={curAppStatus === 'suspended' ? false : true}
           />
         )}
-        {appFields && isWizard && selectedType  && (
+        {appFields && isWizard && selectedType && (
           <OcForm
             formJsonData={appFields}
             fileService={mappedFileService}
-            displayType='wizard'
+            displayType="wizard"
             onSubmit={handleEditFormSubmit}
             onCancel={handleEditFormCancel}
             submitButtonText="Submit"
@@ -261,7 +293,9 @@ const EditApp = (): JSX.Element => {
             showProgressBar={true}
             showGroupDescription={true}
             showGroupHeading={true}
-            />
+            formik={formik}
+            pullFormik={pullFormik}
+          />
         )}
         <OcConfirmationModalComponent
           isOpened={modalState.isOpened}
