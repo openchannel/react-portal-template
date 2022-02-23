@@ -2,14 +2,22 @@ import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { MainTemplate } from 'features/common/templates';
-import { OcNavigationBreadcrumbs, OcSelect } from '@openchannel/react-common-components/dist/ui/common/molecules';
+import {
+  OcNavigationBreadcrumbs,
+  OcSelect,
+} from '@openchannel/react-common-components/dist/ui/common/molecules';
 import { useTypedSelector } from 'features/common/hooks';
 import { fileService } from '@openchannel/react-common-services';
 import { OcLabelComponent } from '@openchannel/react-common-components/dist/ui/common/atoms';
 import { OcConfirmationModalComponent } from '@openchannel/react-common-components/dist/ui/common/organisms';
-import { OcFormValues, OcFormFormikHelpers, AppTypeModel, FullAppData } from '@openchannel/react-common-components';
+import {
+  OcFormValues,
+  OcFormFormikHelpers,
+  AppTypeModel,
+  FullAppData,
+} from '@openchannel/react-common-components';
 import { OcForm, OcSingleForm } from '@openchannel/react-common-components/dist/ui/form/organisms';
-import { getAppTypesOnly, updateFields, toDraftAndSubmit} from '../../store/app-data';
+import { getAppTypesOnly, updateFields, toDraftAndSubmit } from '../../store/app-data';
 import { ConfirmUserModal } from './types';
 import { cancelModal, initialConfirmAppModal, submitModal } from './constants';
 import './styles.scss';
@@ -25,46 +33,63 @@ const CreateApp = (): JSX.Element => {
   const [modalState, setModalState] = React.useState<ConfirmUserModal>(initialConfirmAppModal);
   const [formValues, setFormValues] = React.useState<OcFormValues>();
   const [currentStep, setCurrentStep] = React.useState<number>(1);
-	const [maxStepsToShow, setMaxStepsToShow] = React.useState<number>(3);
+  const [maxStepsToShow, setMaxStepsToShow] = React.useState<number>(3);
   const [isWizard, setIsWizard] = React.useState<boolean>(false);
   const [blockGoBack, setBlockGoBack] = React.useState<boolean>(true);
   const [goTo, setGoTo] = React.useState<string>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [formik, pullFormik] = React.useState<any>({
+    errors: {},
+    touched: {},
+    isSubmitting: false,
+    values: {},
+    isValidating: false,
+    submitCount: 0,
+  });
 
-  const { singleAppData: { listApps, selectedType, appTypes, appFields }
+  const {
+    singleAppData: { listApps, selectedType, appTypes, appFields },
   } = useTypedSelector(({ appData }) => appData);
 
   React.useEffect(() => {
     dispatch(getAppTypesOnly());
-    
+
     return () => setModalState(initialConfirmAppModal);
   }, []);
 
   React.useEffect(() => {
-    const unblock = history.block(({pathname}) => {
+    const unblock = history.block(({ pathname }) => {
       setGoTo(pathname);
       handleEditFormCancel();
       if (blockGoBack) {
         return false;
       }
     });
-  
+
     return () => unblock();
   }, [blockGoBack]);
 
   React.useEffect(() => {
-    const curFormType = appFields?.fields?.some((field:FullAppData) => field.type === 'fieldGroup');
+    const curFormType = appFields?.fields?.some(
+      (field: FullAppData) => field.type === 'fieldGroup',
+    );
     setIsWizard(curFormType);
   }, [appFields]);
- 
-  const setSelected = React.useCallback( (selected: {label:string}) => {
-    const form = listApps.find((e: AppTypeModel) => e.appTypeId === selected.label);
-    dispatch(updateFields(selected.label, form));
-  },[listApps]);
+
+  const setSelected = React.useCallback(
+    (selected: { label: string }) => {
+      const form = listApps.find((e: AppTypeModel) => e.appTypeId === selected.label);
+      dispatch(updateFields(selected.label, form));
+    },
+    [listApps],
+  );
 
   const onCancelModal = () => {
     if (modalState.toDraft && formValues) {
       try {
-        dispatch(toDraftAndSubmit(formValues, 'App has been saved as draft', false, selectedType.id));
+        dispatch(
+          toDraftAndSubmit(formValues, 'App has been saved as draft', false, selectedType.id),
+        );
         history.goBack();
       } catch (e) {
         // donothing
@@ -85,29 +110,52 @@ const CreateApp = (): JSX.Element => {
     setBlockGoBack(false);
   };
 
-  const handleSubmitModal = async () => {    
+  const handleSubmitModal = async () => {
     if (modalState.submitButton && formValues) {
       try {
-        await dispatch(toDraftAndSubmit(formValues, 'App has been submitted for approval', true, selectedType.id));
-        goToBack();
+        await dispatch(
+          toDraftAndSubmit(
+            formValues,
+            'App has been submitted for approval',
+            true,
+            selectedType.id,
+            formik,
+            setModalState,
+            goToBack,
+          ),
+        );
       } catch (e) {
-       // donothing
+        // donothing
       }
     } else {
       goToBack();
     }
   };
 
-  const handleEditFormSubmit = (values: OcFormValues, formikHelpers: OcFormFormikHelpers, action:string) => {
+  const handleEditFormSubmit = (
+    values: OcFormValues,
+    formikHelpers: OcFormFormikHelpers,
+    action: string,
+  ) => {
     setBlockGoBack(false);
-    if(action === 'submit') {
+    if (action === 'submit') {
       formikHelpers.setSubmitting(false);
       setFormValues(values);
       setModalState(submitModal);
-    } else if(action === 'save') {
+    } else if (action === 'save') {
       try {
-      dispatch(toDraftAndSubmit(values, 'App has been saved as draft', false, selectedType.id));
-      history.goBack();
+        dispatch(
+          toDraftAndSubmit(
+            values,
+            'App has been saved as draft',
+            false,
+            selectedType.id,
+            formik,
+            setModalState,
+            goToBack,
+          ),
+        );
+        history.goBack();
       } catch (e) {
         // donothing
       }
@@ -132,7 +180,7 @@ const CreateApp = (): JSX.Element => {
         />
       </div>
       <div className="container mt-5 create-app-body">
-      <form className="mb-2">
+        <form className="mb-2">
           <div className="d-flex flex-column flex-md-row align-items-md-center mb-2">
             <OcLabelComponent
               text="Choose your app type"
@@ -144,7 +192,7 @@ const CreateApp = (): JSX.Element => {
                 onSelectionChange={setSelected}
                 selectValArr={appTypes}
                 value={selectedType?.label}
-                labelField='label'
+                labelField="label"
               />
             </div>
           </div>
@@ -165,7 +213,7 @@ const CreateApp = (): JSX.Element => {
           <OcForm
             formJsonData={appFields}
             fileService={mappedFileService}
-            displayType='wizard'
+            displayType="wizard"
             onSubmit={handleEditFormSubmit}
             onCancel={handleEditFormCancel}
             submitButtonText="Submit"
@@ -179,7 +227,9 @@ const CreateApp = (): JSX.Element => {
             showProgressBar={true}
             showGroupDescription={true}
             showGroupHeading={true}
-            />
+            formik={formik}
+            pullFormik={pullFormik}
+          />
         )}
         <OcConfirmationModalComponent
           isOpened={modalState.isOpened}
