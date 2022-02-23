@@ -16,14 +16,14 @@ export const MainTemplate: React.FC = ({ children }) => {
 
     const init = async () => {
       try {
-        checkSession();
+        await checkSession();
       } catch {
         /*do nothing*/
       }
 
       if (!isConfigLoaded) {
         try {
-          getAuthConfig();
+          await getAuthConfig();
         } catch {
           /*do nothing*/
         }
