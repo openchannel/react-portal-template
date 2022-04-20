@@ -1,0 +1,95 @@
+{
+  "name": "react-portal-template",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@openchannel/react-common-components": "^0.2.0",
+    "@openchannel/react-common-services": "^0.2.0",
+    "lodash.isempty": "^4.4.0",
+    "node-sass": "^4.14.1",
+    "oidc-client": "^1.11.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-helmet": "^6.1.0",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-redux": "^7.2.4",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.1.0",
+    "redux-thunk": "^2.3.0",
+    "typescript": "^4.2.4"
+  },
+  "scripts": {
+    "start": "env-cmd -f .env react-app-rewired start",
+    "start:stage1": "env-cmd -f .env.stage1 react-app-rewired start",
+    "start:dev1": "env-cmd -f .env.dev1 react-app-rewired start",
+    "start:us1": "env-cmd -f .env.prod react-app-rewired start",
+    "build": "env-cmd -f .env react-app-rewired build",
+    "build:stage1": "env-cmd -f .env.stage1 react-app-rewired build",
+    "build:dev1": "env-cmd -f .env.dev1 react-app-rewired build",
+    "build:us1": "env-cmd -f .env.prod react-app-rewired build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier src/**/*.{ts,tsx,js,jsx} --write",
+    "prepare": "husky install",
+    "update-openchannel-pkgs": "npm i @openchannel/react-common-components@latest @openchannel/react-common-services@latest"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{jx,ts,tsx}": [
+      "eslint --quiet --fix"
+    ],
+    "*.{json,ms,html}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@testing-library/react": "^12.0.0",
+    "@testing-library/user-event": "^13.1.9",
+    "@types/jest": "^26.0.24",
+    "@types/lodash.isempty": "^4.4.6",
+    "@types/minimist": "^1.2.2",
+    "@types/node": "^16.3.2",
+    "@types/nprogress": "^0.2.0",
+    "@types/react": "^17.0.14",
+    "@types/react-dom": "^17.0.9",
+    "@types/react-helmet": "^6.1.2",
+    "@types/react-redux": "^7.1.18",
+    "@types/react-router-dom": "^5.1.8",
+    "@types/redux": "^3.6.0",
+    "env-cmd": "^10.1.0",
+    "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "http-proxy-middleware": "^2.0.1",
+    "husky": "^7.0.1",
+    "nprogress": "^0.2.0",
+    "prettier": "^2.3.2",
+    "react-app-rewired": "^2.1.8",
+    "react-scripts": "^4.0.3",
+    "redux-devtools-extension": "^2.13.9"
+  }
+}

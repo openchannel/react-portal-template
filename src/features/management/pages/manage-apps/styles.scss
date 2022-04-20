@@ -1,0 +1,70 @@
+@import '/src/styles.scss';
+@import '/src/theme.scss';
+@import '/src/assets/styles/mixins';
+
+div.manage-app-header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 16px;
+    justify-content: space-between;
+    min-height: 96px;
+    @include media-breakpoint-sm {
+		padding: 16px 24px;
+    }
+
+    & .main-container {
+        padding-right: 15px;
+        padding-left: 15px;
+        &__custom-button {
+            &.oc-button {
+                font-weight: 500;
+            }
+        }
+    }
+}
+
+.manage-app {
+    & .chart__type-section.dropdown label {
+        font-size: 14px;
+        padding-top: 5px;
+    }
+    & .manage-app-table {
+        .oc-table {
+            width: 100%;
+            min-width: 928px;
+            &__td {
+                & .oc-table__app-name {
+                    white-space: nowrap;
+                    max-width: 180px;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                }
+                & .oc-table__text-wrapper{
+                    &.oc-table__indicator {
+                        width: 8px;
+                        height: 8px;
+                        padding-right: 8px;
+                        margin-right: 16px;
+                    }
+                }
+            }
+            &__name {
+                width: 256px;
+            }
+            &__summary {
+                width: 352px;
+            }
+            &__data, &__status {
+                width: 152px;
+            }
+            &__action {
+                width: 60px;
+            }
+            &__placeholder {
+                width: 40px;
+            }
+        }
+    }
+}
+

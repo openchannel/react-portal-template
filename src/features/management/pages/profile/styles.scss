@@ -1,0 +1,85 @@
+@import '/src/styles.scss';
+@import '/src/theme.scss';
+@import '/src/assets/styles/mixins';
+
+.active-link {
+  color: $link-primary !important;
+  @include font-medium();
+  @include media-breakpoint-md {
+    color: #333 !important;
+    border-bottom: 3px solid $link-primary;
+    padding-bottom: 1rem;
+  }
+}
+
+.page-navigation {
+  padding-top: 5rem;
+  @include media-breakpoint-md {
+    padding-top: 3rem;
+  }
+  .form__buttons {
+    display: block;
+    margin: 0;
+  }
+}
+
+ul.list-unstyled {
+  @include media-breakpoint-md {
+    display: flex;
+  }
+
+  li {
+    padding: 1rem 0;
+    @include media-breakpoint-md {
+      padding: 0;
+    }
+
+    & + li {
+      @include media-breakpoint-md {
+        margin-left: 30px;
+      }
+    }
+
+    span {
+      color: inherit;
+      cursor: pointer;
+      @include font-size-md();
+      @include media-breakpoint-md {
+        @include font-medium();
+        color: #999;
+      }
+    }
+  }
+}
+
+.breadcrumbs-wrapper {
+  display: flex;
+  align-items: center;
+
+  .breadcrumbs-icon {
+    padding-bottom: 1px;
+  }
+}
+
+.page-title {
+  line-height: 40px;
+  margin-bottom: 0;
+  @include media-breakpoint-md {
+    font-size: 24px;
+    line-height: 36px;
+  }
+}
+
+.header-padding {
+  @include media-breakpoint-md {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+.my-profile-nav {
+  .main-container {
+    padding: 16px;
+    min-height: 96px;
+  }
+}
