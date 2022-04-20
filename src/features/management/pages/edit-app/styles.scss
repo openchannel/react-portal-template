@@ -1,0 +1,102 @@
+@import '/src/styles.scss';
+@import '/src/theme.scss';
+@import '/src/assets/styles/mixins';
+
+div.edit-app-header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    min-height: 96px;
+    @include media-breakpoint-sm {
+		padding: 16px 24px;
+    }
+    & .main-container {
+        padding: 16px;
+        &__custom-button {
+            &.oc-button {
+                font-weight: 500;
+            }
+        }
+        &__page-title__router-navigate {
+            margin-bottom: 8px;
+            & img {
+                margin-bottom: 3px;
+            }
+        }
+    }
+}
+
+.edit-app-body {
+    width: 1200px;
+    @include media-breakpoint-xxl {
+        width: 950px;
+    }
+    @include media-breakpoint-sm {
+        width: auto;
+    }
+    & .chart {
+        &__period-container {
+            @include media-breakpoint-xl {
+                margin-left: 16px;
+            }
+            @include media-breakpoint-md {
+                margin-left: 0px;
+            }
+        }
+        &__type-section {
+            height: 46px;
+            &-dropdown {
+                display: flex;
+            }
+            &.dropdown {
+                margin-bottom: 0px;
+                & label {
+                    font-size: 14px;
+                }
+            }
+        }
+        &__period-item {
+            @include media-breakpoint-xl {
+                width: 128px;
+            }
+            @include media-breakpoint-lg {
+                padding: 16px 8px;
+                width: 100px;
+            }
+            @include media-breakpoint-md {
+                padding: 0;
+                justify-content: flex-start;
+            }
+        }
+        &__swap-type-button {
+            @include media-breakpoint-sm {
+                margin-right: 3rem;
+            }
+        }
+    }
+    .apps-type{
+        &-label {    
+            font-size: 14px;
+            line-height: 14px;
+            word-break: break-word;
+        }
+        &-select .dropdown-toggle{
+            border: 2px solid #c9d5ea;
+        }
+    }
+    .form__buttons {
+        margin: 40px 0 80px;
+        @include media-breakpoint-lg {
+            margin: 32px 0 64px;
+        }
+        @include media-breakpoint-sm {
+            flex-direction: column;
+            margin: 24px 0 40px;
+        }
+        & .form__button {
+            margin-bottom: 2rem;
+            margin-right: 0px;
+        }
+    }
+}

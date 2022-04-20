@@ -1,0 +1,35 @@
+@import '/src/styles.scss';
+@import '/src/theme.scss';
+@import '/src/assets/styles/mixins';
+
+div.create-app-header {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 16px;
+  justify-content: space-between;
+  min-height: 96px;
+  @include media-breakpoint-sm {
+    padding: 16px 24px;
+  }
+
+  & .main-container {
+    padding-right: 15px;
+    padding-left: 15px;
+    &__custom-button {
+      &.oc-button {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.container.create-app-body {
+  width: 1200px;
+  @include media-breakpoint-xxl {
+    width: 950px;
+  }
+  @include media-breakpoint-sm {
+    width: auto;
+  }
+}

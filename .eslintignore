@@ -1,0 +1,6 @@
+node_modules
+build
+coverage
+src/setupProxy.js
+config-overrides.js
+.eslintrc.js

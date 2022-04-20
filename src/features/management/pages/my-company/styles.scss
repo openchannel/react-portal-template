@@ -1,0 +1,79 @@
+@import '/src/styles.scss';
+@import '/src/theme.scss';
+@import '/src/assets/styles/mixins';
+
+.company-header {
+  & .main-container {
+      padding: 16px;
+      min-height: 96px;
+  }
+}
+.active-link {
+  color: $link-primary !important;
+  @include font-medium();
+  @include media-breakpoint-md {
+    color: #333 !important;
+    border-bottom: 3px solid $link-primary;
+    padding-bottom: 1rem;
+  }
+}
+.my-company-nav {
+  .main-container {
+    padding: 16px;
+    min-height: 96px;
+  }
+}
+
+ul.list-unstyled {
+  @include media-breakpoint-md {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  li {
+    @include media-breakpoint-md {
+      white-space: nowrap;
+    }
+
+    & + li {
+      @include media-breakpoint-md {
+        margin-left: 2rem;
+      }
+    }
+
+    span {
+      @include font-size-md();
+      color: inherit;
+      cursor: pointer;
+      @include media-breakpoint-md {
+        @include font-medium();
+        color: #999;
+      }
+
+      &.active-link {
+        @include font-medium();
+        @include media-breakpoint-md {
+          color: #333 !important;
+          border-bottom: 3px solid #537cfd;
+          padding-bottom: 8px;
+        }
+      }
+    }
+  }
+}
+
+.page-title {
+  line-height: 40px;
+}
+
+.my-company-container {
+  .form {
+    .form__buttons {
+      margin: 0;
+    }
+    .form__button {
+      min-width: 256px;
+    }
+  }
+}
